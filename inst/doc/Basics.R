@@ -72,7 +72,7 @@ num_comp
 ## ----glm-reg-------------------------------------------------------------
 grid_regular(
   mixture,
-  regularization,
+  penalty,
   levels = 3 # or c(3, 4), etc
 )
 
@@ -80,7 +80,7 @@ grid_regular(
 set.seed(1041)
 grid_random(
   mixture,
-  regularization,
+  penalty,
   size = 6 
 )
 

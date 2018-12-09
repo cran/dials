@@ -465,37 +465,37 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>For example, for a glmnet model, a regular grid might be:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">grid_regular</span>(</a>
 <a class="sourceLine" id="cb11-2" data-line-number="2">  mixture,</a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">  regularization,</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">  penalty,</a>
 <a class="sourceLine" id="cb11-4" data-line-number="4">  <span class="dt">levels =</span> <span class="dv">3</span> <span class="co"># or c(3, 4), etc</span></a>
 <a class="sourceLine" id="cb11-5" data-line-number="5">)</a>
 <a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#&gt; # A tibble: 9 x 2</span></a>
-<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co">#&gt;   mixture regularization</span></a>
-<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#&gt;     &lt;dbl&gt;          &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="co">#&gt; 1     0     0.0000000001</span></a>
-<a class="sourceLine" id="cb11-10" data-line-number="10"><span class="co">#&gt; 2     0.5   0.0000000001</span></a>
-<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="co">#&gt; 3     1     0.0000000001</span></a>
-<a class="sourceLine" id="cb11-12" data-line-number="12"><span class="co">#&gt; 4     0     0.00001     </span></a>
-<a class="sourceLine" id="cb11-13" data-line-number="13"><span class="co">#&gt; 5     0.5   0.00001     </span></a>
-<a class="sourceLine" id="cb11-14" data-line-number="14"><span class="co">#&gt; 6     1     0.00001     </span></a>
-<a class="sourceLine" id="cb11-15" data-line-number="15"><span class="co">#&gt; 7     0     1           </span></a>
-<a class="sourceLine" id="cb11-16" data-line-number="16"><span class="co">#&gt; 8     0.5   1           </span></a>
-<a class="sourceLine" id="cb11-17" data-line-number="17"><span class="co">#&gt; 9     1     1</span></a></code></pre></div>
+<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co">#&gt;   mixture      penalty</span></a>
+<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#&gt;     &lt;dbl&gt;        &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="co">#&gt; 1     0   0.0000000001</span></a>
+<a class="sourceLine" id="cb11-10" data-line-number="10"><span class="co">#&gt; 2     0.5 0.0000000001</span></a>
+<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="co">#&gt; 3     1   0.0000000001</span></a>
+<a class="sourceLine" id="cb11-12" data-line-number="12"><span class="co">#&gt; 4     0   0.00001     </span></a>
+<a class="sourceLine" id="cb11-13" data-line-number="13"><span class="co">#&gt; 5     0.5 0.00001     </span></a>
+<a class="sourceLine" id="cb11-14" data-line-number="14"><span class="co">#&gt; 6     1   0.00001     </span></a>
+<a class="sourceLine" id="cb11-15" data-line-number="15"><span class="co">#&gt; 7     0   1           </span></a>
+<a class="sourceLine" id="cb11-16" data-line-number="16"><span class="co">#&gt; 8     0.5 1           </span></a>
+<a class="sourceLine" id="cb11-17" data-line-number="17"><span class="co">#&gt; 9     1   1</span></a></code></pre></div>
 <p>and, similarly, a random grid is created using</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1041</span>)</a>
 <a class="sourceLine" id="cb12-2" data-line-number="2"><span class="kw">grid_random</span>(</a>
 <a class="sourceLine" id="cb12-3" data-line-number="3">  mixture,</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">  regularization,</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4">  penalty,</a>
 <a class="sourceLine" id="cb12-5" data-line-number="5">  <span class="dt">size =</span> <span class="dv">6</span> </a>
 <a class="sourceLine" id="cb12-6" data-line-number="6">)</a>
 <a class="sourceLine" id="cb12-7" data-line-number="7"><span class="co">#&gt; # A tibble: 6 x 2</span></a>
-<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="co">#&gt;   mixture regularization</span></a>
-<a class="sourceLine" id="cb12-9" data-line-number="9"><span class="co">#&gt;     &lt;dbl&gt;          &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co">#&gt; 1   0.200    0.0176     </span></a>
-<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="co">#&gt; 2   0.750    0.000388   </span></a>
-<a class="sourceLine" id="cb12-12" data-line-number="12"><span class="co">#&gt; 3   0.191    0.000000159</span></a>
-<a class="sourceLine" id="cb12-13" data-line-number="13"><span class="co">#&gt; 4   0.929    0.00000176 </span></a>
-<a class="sourceLine" id="cb12-14" data-line-number="14"><span class="co">#&gt; 5   0.143    0.0442     </span></a>
-<a class="sourceLine" id="cb12-15" data-line-number="15"><span class="co">#&gt; 6   0.973    0.0110</span></a></code></pre></div>
+<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="co">#&gt;   mixture     penalty</span></a>
+<a class="sourceLine" id="cb12-9" data-line-number="9"><span class="co">#&gt;     &lt;dbl&gt;       &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co">#&gt; 1   0.200 0.0176     </span></a>
+<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="co">#&gt; 2   0.750 0.000388   </span></a>
+<a class="sourceLine" id="cb12-12" data-line-number="12"><span class="co">#&gt; 3   0.191 0.000000159</span></a>
+<a class="sourceLine" id="cb12-13" data-line-number="13"><span class="co">#&gt; 4   0.929 0.00000176 </span></a>
+<a class="sourceLine" id="cb12-14" data-line-number="14"><span class="co">#&gt; 5   0.143 0.0442     </span></a>
+<a class="sourceLine" id="cb12-15" data-line-number="15"><span class="co">#&gt; 6   0.973 0.0110</span></a></code></pre></div>
 </div>
 
 <script type="text/javascript">
