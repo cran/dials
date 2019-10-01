@@ -2,42 +2,71 @@
 % Please edit documentation in R/grids.R
 \name{grid_regular}
 \alias{grid_regular}
+\alias{grid_regular.param_set}
+\alias{grid_regular.list}
+\alias{grid_regular.param}
+\alias{grid_regular.workflow}
+\alias{make_regular_grid}
 \alias{grid_random}
+\alias{grid_random.param_set}
+\alias{grid_random.list}
+\alias{grid_random.param}
+\alias{grid_random.workflow}
 \title{Create grids of tuning parameters}
 \usage{
-grid_regular(..., levels = 3, original = TRUE)
+grid_regular(x, ..., levels = 3, original = TRUE)
 
-grid_random(..., size = 5, original = TRUE)
+\method{grid_regular}{param_set}(x, ..., levels = 3, original = TRUE)
+
+\method{grid_regular}{list}(x, ..., levels = 3, original = TRUE)
+
+\method{grid_regular}{param}(x, ..., levels = 3, original = TRUE)
+
+\method{grid_regular}{workflow}(x, ..., levels = 3, original = TRUE)
+
+make_regular_grid(..., levels = 3, original = TRUE)
+
+grid_random(x, ..., size = 5, original = TRUE)
+
+\method{grid_random}{param_set}(x, ..., size = 5, original = TRUE)
+
+\method{grid_random}{list}(x, ..., size = 5, original = TRUE)
+
+\method{grid_random}{param}(x, ..., size = 5, original = TRUE)
+
+\method{grid_random}{workflow}(x, ..., size = 5, original = TRUE)
 }
 \arguments{
-\item{...}{One or more \code{param} objects (such as \code{mtry()} or
-\code{penalty()}). None of the objects can have \code{unknown()} values in
+\item{x}{A \code{param} object, list, or \code{param_set}.}
+
+\item{...}{One or more \code{param} objects (such as \code{\link[=mtry]{mtry()}} or
+\code{\link[=penalty]{penalty()}}). None of the objects can have \code{unknown()} values in
 the parameter ranges or values.}
 
-\item{levels}{An integer for how many value of each parameter will be used
-to make the regular grid? \code{levels} can be a single integer or a vector of
+\item{levels}{An integer for the number of values of each parameter to use
+to make the regular grid. \code{levels} can be a single integer or a vector of
 integers that is the same length as the number of parameters in \code{...}.}
 
 \item{original}{A logical: should the parameters be in the original units or
 in the transformed space (if any)?}
 
-\item{size}{A single integer for the total number of parameter values
-returned for the random grid.}
+\item{size}{A single integer for the total number of parameter value
+combinations returned for the random grid.}
 }
 \value{
-A tibble with an additional class for the type of type of grid
-("grid_regular" or "grid_random"). There are columns for each parameter and
-a row for every parameter or parameter combination.
+A tibble with an additional class for the type of grid
+(\code{"grid_regular"} or \code{"grid_random"}). There are columns for
+each parameter and a row for every parameter combination.
 }
 \description{
 Random and regular grids can be created for any number of parameter objects.
 }
 \examples{
 # Will fail due to unknowns:
-# grid_regular(mtry, min_n)
+# grid_regular(mtry(), min_n())
 
-grid_regular(penalty, mixture)
-grid_regular(penalty, mixture, levels = c(3, 4))
-grid_random(penalty, mixture)
+grid_regular(penalty(), mixture())
+grid_regular(penalty(), mixture(), levels = c(3, 4))
+grid_random(penalty(), mixture())
 
 }
