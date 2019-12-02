@@ -1,3 +1,22 @@
+# dials 0.0.4
+
+## New parameter functions:
+
+* Parameters `smoothness()` was added. 
+
+## Other changes
+
+* `param_set()` is being renamed `parameters()`. The old name implied that you _only_ use it to set parameters (say from a recipe or model rather than _de novo_). `param_set()` will be available until version 0.0.5.    
+
+* The range for `num_hash()` was increase to be `2^8` to `2^12`. 
+
+* The range for `max_tokens()` was changed to be 0 to 1000. 
+
+## Breaking changes
+
+* `offset()` has been renamed `kernel_offset()` to avoid name conflicts. 
+
+
 # dials 0.0.3
 
 ## Breaking changes

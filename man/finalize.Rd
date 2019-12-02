@@ -4,7 +4,7 @@
 \alias{finalize}
 \alias{finalize.list}
 \alias{finalize.param}
-\alias{finalize.param_set}
+\alias{finalize.parameters}
 \alias{get_p}
 \alias{get_log_p}
 \alias{get_n_frac}
@@ -20,7 +20,7 @@ finalize(object, ...)
 
 \method{finalize}{param}(object, x, force = TRUE, ...)
 
-\method{finalize}{param_set}(object, x, force = TRUE, ...)
+\method{finalize}{parameters}(object, x, force = TRUE, ...)
 
 get_p(object, x, log_vals = FALSE, ...)
 
@@ -28,8 +28,7 @@ get_log_p(object, x, ...)
 
 get_n_frac(object, x, log_vals = FALSE, frac = 1/3, ...)
 
-get_n_frac_range(object, x, log_vals = FALSE, frac = c(1/10, 5/10),
-  ...)
+get_n_frac_range(object, x, log_vals = FALSE, frac = c(1/10, 5/10), ...)
 
 get_n(object, x, log_vals = FALSE, ...)
 
@@ -69,9 +68,9 @@ These functions take a parameter object and modify the unknown parts of
 \details{
 \code{finalize()} runs the embedded finalizer function contained in the \code{param}
 object (\code{object$finalize}) and returns the updated version. The finalization
-function is one of the \code{get_*()} helpers.
+function is one of the \verb{get_*()} helpers.
 
-The \code{get_*()} helper functions are designed to be used with the pipe
+The \verb{get_*()} helper functions are designed to be used with the pipe
 and update the parameter object in-place.
 
 \code{get_p()} and \code{get_log_p()} set the upper value of the range to be

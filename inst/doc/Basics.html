@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -451,7 +450,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">weight_func</span>()</a>
 <a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt; Distance Weighting Function  (qualitative)</span></a>
 <a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt; 10 possible value include:</span></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; 'rectangular', 'triangular', 'epanechnikov', 'biweight', 'triweight', 'c...</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; 'rectangular', 'triangular', 'epanechnikov', 'biweight', 'triweight', 'cos', ...</span></a></code></pre></div>
 <p>The helper functions are analogues to the quantitative parameters:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co"># redefine values</span></a>
 <a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">weight_func</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">value_set</span>(<span class="kw">c</span>(<span class="st">&quot;rectangular&quot;</span>, <span class="st">&quot;triangular&quot;</span>))</a>
@@ -494,7 +493,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="parameter-sets" class="section level2">
 <h2>Parameter Sets</h2>
 <p>These are collection of parameters used in a model, recipe, or other object. They can also be created manually and can have alternate identification fields:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">glmnet_set &lt;-<span class="st"> </span><span class="kw">param_set</span>(<span class="kw">list</span>(<span class="dt">lambda =</span> <span class="kw">penalty</span>(), <span class="dt">alpha =</span> <span class="kw">mixture</span>()))</a>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">glmnet_set &lt;-<span class="st"> </span><span class="kw">parameters</span>(<span class="kw">list</span>(<span class="dt">lambda =</span> <span class="kw">penalty</span>(), <span class="dt">alpha =</span> <span class="kw">mixture</span>()))</a>
 <a class="sourceLine" id="cb12-2" data-line-number="2">glmnet_set</a>
 <a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co">#&gt; Collection of 2 parameters for tuning</span></a>
 <a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#&gt; </span></a>
