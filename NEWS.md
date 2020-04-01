@@ -1,3 +1,17 @@
+# dials 0.0.5
+
+* When kept in the original units, a parameter's range must now be the same data type as the parameter. 
+
+* Renamed `margin()` to `svm_margin()` (@gabrielodom and @gralgomez, #85)
+
+* A bug in space filling designs with qualitative parameters was fixed (#94)
+
+* A better error message was created when grids are used with parameters sets that contain parameters that require finalization (#99)
+
+* Space-filling desings now share the same attributes as other grid objects (#100)
+
+* The range for `sample_frac()` was fixed (#96)
+
 # dials 0.0.4
 
 ## New parameter functions:

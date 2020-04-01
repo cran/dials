@@ -56,7 +56,7 @@
 #'
 #' num_subgroups()
 #'
-#' num_subgroups(range = c(3, 5))
+#' num_subgroups(range = c(3L, 5L))
 #'
 #' # Custom parameters instantly have access
 #' # to sequence generating functions
@@ -75,24 +75,28 @@ new_quant_param <- function(
   type <- match.arg(type)
 
   if (!(type %in% c("double", "integer"))) {
-    stop("`type should be either 'double' or 'integer'.", call. = FALSE)
+    rlang::abort("`type` should be either 'double' or 'integer'.")
+  } else {
+    check_range(range, type, trans)
   }
 
 
   range <- as.list(range)
 
   if (length(inclusive) != 2)
-    stop("`inclusive` must have upper and lower values.", all. = FALSE)
+    rlang::abort("`inclusive` must have upper and lower values.")
   if (any(is.na(inclusive)))
-    stop("Boundary descriptors must be non-missing.", call. = FALSE)
+    rlang::abort("Boundary descriptors must be non-missing.")
   if (!is.logical(inclusive))
-    stop("`inclusive` should be logical", call. = FALSE)
+    rlang::abort("`inclusive` should be logical")
 
   if (!is.null(trans)) {
     if (!is.trans(trans))
-      stop(
-        "`trans` must be a 'trans' class object (or NULL). See ",
-        "`?scales::trans_new`.", call. = FALSE
+      rlang::abort(
+        paste0(
+          "`trans` must be a 'trans' class object (or NULL). See ",
+          "`?scales::trans_new`."
+        )
       )
   }
 
@@ -108,16 +112,20 @@ new_quant_param <- function(
 
   if (!is.null(values)) {
     ok_vals <- value_validate(res, values)
-    if(all(ok_vals))
+    if (all(ok_vals))
       res$values <- values
     else
-      stop("Some values are not valid: ",
-           glue_collapse(
-             values[!ok_vals],
-             sep = ", ",
-             last = " and ",
-             width = min(options()$width - 30, 10)
-           ))
+      rlang::abort(
+        paste0(
+          "Some values are not valid: ",
+          glue_collapse(
+            values[!ok_vals],
+            sep = ", ",
+            last = " and ",
+            width = min(options()$width - 30, 10)
+          )
+        )
+      )
   }
 
   res
@@ -132,11 +140,11 @@ new_qual_param <- function(type = c("character", "logical"), values,
 
   if (type == "logical") {
     if (!is.logical(values))
-      stop("`values` must be logical", call. = FALSE)
+      rlang::abort("`values` must be logical")
   }
   if (type == "character") {
     if (!is.character(values))
-      stop("`values` must be character", call. = FALSE)
+      rlang::abort("`values` must be character")
   }
   if (is_unknown(default))
     default <- values[1]

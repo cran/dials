@@ -1,7 +1,11 @@
-library(testthat)
-library(dials)
 
 context("parameter grids")
+
+# ------------------------------------------------------------------------------
+
+source("helper-functions.R")
+
+# ------------------------------------------------------------------------------
 
 test_that('regular grid', {
   expect_error(
@@ -57,3 +61,31 @@ test_that('wrong argument name', {
   )
 })
 
+test_that('filter arg yields same results', {
+  p <- parameters(penalty(), mixture())
+  expect_equal(
+    filter(with_seed(36L, grid_random(p)), penalty < .01),
+    with_seed(36L, grid_random(p, filter = penalty < .01))
+  )
+  expect_equal(
+    filter(with_seed(36L, grid_random(p)), penalty > .001),
+    with_seed(36L, grid_random(p, filter = penalty > .001))
+  )
+  expect_equal(
+    filter(with_seed(36L, grid_random(p)), mixture == .01),
+    with_seed(36L, grid_random(p, filter = mixture == .01))
+  )
+})
+
+
+test_that('grid attributes', {
+  p <- parameters(penalty(), mixture())
+  expect_true(proper_grid(grid_regular(p), "grid_regular"))
+  expect_true(proper_grid(grid_regular(penalty(), mixture()), "grid_regular"))
+  expect_true(proper_grid(grid_regular(list(penalty(), mixture())), "grid_regular"))
+
+  expect_true(proper_grid(grid_random(p), "grid_random"))
+  expect_true(proper_grid(grid_random(penalty(), mixture()), "grid_random"))
+  expect_true(proper_grid(grid_random(list(penalty(), mixture())), "grid_random"))
+
+})
