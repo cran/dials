@@ -1,12 +1,12 @@
-4a29bfdf30288335946b0a19d48b3cf2 *DESCRIPTION
+461a815884b2f2330252ea34540c97a6 *DESCRIPTION
 2e659f229aeda9e80de9727da53add8a *NAMESPACE
-d33dc8452ae0823e0d65789191b3d3c2 *NEWS.md
+e74622c429f557a1e69efc5e0b051aaf *NEWS.md
 96a14fea3ec27527d084c9a1427c4237 *R/0_imports.R
 db6e03a2d6714e95d348e1aa398a3902 *R/aaa.R
 08fa6e131bd6cef68cbc2117088bc8b8 *R/aaa_ranges.R
 17a00486cfee1571ec0425e00f46b4aa *R/aaa_unknown.R
 594c8696343b7ddd580048e86cf1e41b *R/aaa_values.R
-948bcd940ac9645f511ae372121a3cc6 *R/constructors.R
+5ffcb53da11891425c5ce9a171a16124 *R/constructors.R
 6b438dfae413dee99ab529e95d79e49c *R/data.R
 1d8fac27c68c7d2832c50eca1a74e7e0 *R/dials-package.R
 9507390f3d5065e66157ea26934649fd *R/dplyr-compat-grid.R
@@ -14,7 +14,7 @@ db6e03a2d6714e95d348e1aa398a3902 *R/aaa.R
 b7e9356c2a60a5a607494875f484fdc0 *R/encode_unit.R
 6fa895c0b5e8993c52a27b3ae6123ab6 *R/finalize.R
 947fd62496a8e1c8bb2aef3a78c9f828 *R/grids.R
-f3106681ed4e33a623c5b2c8927ba77a *R/misc.R
+230f4ac9cb807b783276d907fe86ab45 *R/misc.R
 402b58922ca8ef8b293def245e1e9fc0 *R/param_Laplace.R
 d1715587180f11195a9b1294c36e3f9f *R/param_activation.R
 67c5e796be22aef9c0de577579005b7a *R/param_deg_free.R
@@ -108,7 +108,7 @@ db6119abe5f0c18c7a55f69282e7fd15 *man/weight_func.Rd
 82d029c660befa9164bc7e8af75962ea *tests/testthat.R
 9803c9ae402b737c1552481d653efe88 *tests/testthat/helper-functions.R
 6cdd3ba89c26307e3aa70daf395fb971 *tests/testthat/helper-skip_if_below_r_version.R
-9387a81323a7bc8e57f3cbb9393721be *tests/testthat/test_construction.R
+9c8a06c69775ead5c252b7b1949f0608 *tests/testthat/test_construction.R
 a6b01dfe91d984718c5fb0ab4ade1882 *tests/testthat/test_deprecated.R
 f4b40fc1efe5dfef1a00e4fe78db8a39 *tests/testthat/test_dplyr_grid_compat.R
 12b89cf2d8e537d2c3a5c1a8d1604b7e *tests/testthat/test_dplyr_set_compat.R
