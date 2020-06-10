@@ -244,6 +244,39 @@ update.parameters <- function(object, ...) {
   object
 }
 
+# ------------------------------------------------------------------------------
+
+#' @export
+`[.parameters` <- function(x, i, j, drop = FALSE, ...) {
+  out <- NextMethod()
+  parameters_reconstruct(out, x)
+}
+
+# ------------------------------------------------------------------------------
+
+#' @export
+`names<-.parameters` <- function(x, value) {
+  out <- NextMethod()
+
+  # If anything is renamed, we fall back. This ensures
+  # that simply swapping existing column names triggers a fall back.
+  if (!identical_names(out, x)) {
+    out <- tib_upcast(out)
+    return(out)
+  }
+
+  parameters_reconstruct(out, x)
+}
+
+identical_names <- function(x, y) {
+  x_names <- names(x)
+  y_names <- names(y)
+
+  identical(x_names, y_names)
+}
+
+# ------------------------------------------------------------------------------
+
 #' @export
 #' @rdname parameters
 param_set <- function(x, ...) {
@@ -255,5 +288,3 @@ param_set <- function(x, ...) {
   )
   parameters(x, ...)
 }
-
-
