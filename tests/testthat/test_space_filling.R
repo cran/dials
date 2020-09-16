@@ -12,14 +12,14 @@ test_that('max entropy designs', {
   )
   expect_equal(nrow(grid_1), 11L)
   expect_true(all(grid_1$mixture > 0 & grid_1$mixture < 1))
-  expect_true(all(grid_1$cost > -10 & grid_1$cost < -1))
+  expect_true(all(grid_1$cost > -10 & grid_1$cost < 5))
 
   grid_2 <- grid_max_entropy(
     cost(), mixture(),
     size = 11,
     original = TRUE
   )
-  expect_true(all(grid_2$cost > 2^-10 & grid_2$cost < 2^-1))
+  expect_true(all(grid_2$cost > 2^-10 & grid_2$cost < 2^5))
 
   grid_3 <- grid_max_entropy(
     cost(),
@@ -59,14 +59,14 @@ test_that('latin square designs', {
   )
   expect_equal(nrow(grid_1), 11L)
   expect_true(all(grid_1$mixture > 0 & grid_1$mixture < 1))
-  expect_true(all(grid_1$cost > -10 & grid_1$cost < -1))
+  expect_true(all(grid_1$cost > -10 & grid_1$cost < 5))
 
   grid_2 <- grid_latin_hypercube(
     cost(), mixture(),
     size = 11,
     original = TRUE
   )
-  expect_true(all(grid_2$cost > 2^-10 & grid_2$cost < 2^-1))
+  expect_true(all(grid_2$cost > 2^-10 & grid_2$cost < 2^5))
 
   grid_3 <- grid_latin_hypercube(
     cost(),
@@ -74,6 +74,11 @@ test_that('latin square designs', {
     original = FALSE
   )
   expect_equal(ncol(grid_3), 1L)
+
+  expect_lt(
+    nrow(grid_latin_hypercube(prod_degree(), prune_method(), size = 20)),
+    20
+  )
 
   expect_error(
     grid_latin_hypercube(

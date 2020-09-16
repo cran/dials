@@ -13,7 +13,8 @@
 #'
 #' @inheritParams grid_random
 #' @param size A single integer for the total number of parameter value
-#' combinations returned.
+#' combinations returned. If duplicate combinations are
+#' generated from this size, the smaller, unique set is returned.
 #' @param variogram_range A numeric value greater than zero. Larger values
 #'  reduce the likelihood of empty regions in the parameter space.
 #' @param iter An integer for the maximum number of iterations used to find
@@ -23,7 +24,7 @@
 #'  rejoinder by the authors. Statistical Science. 4. 10.1214/ss/1177012413.
 #'
 #' Santner, Thomas, Williams, Brian, and Notz, William. (2003). The Design and
-#'  Analysis Computer Experiments. Springer.
+#'  Analysis of Computer Experiments. Springer.
 #'
 #' Dupuy, D., Helbert, C., and Franco, J. (2015). DiceDesign and DiceEval: Two R
 #'  packages for design and analysis of computer experiments. Journal of

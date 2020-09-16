@@ -16,7 +16,7 @@
 #' @param inclusive A two-element logical vector for whether the range
 #'  values should be inclusive or exclusive.
 #'
-#' @param default A single value the same class as `type` for the default
+#' @param default A single value with the same class as `type` for the default
 #' parameter value. `unknown()` can also be used here.
 #'
 #' @param trans A `trans` object from the \pkg{scales} package, such as
@@ -166,21 +166,50 @@ new_qual_param <- function(type = c("character", "logical"), values,
 
 #' @export
 print.quant_param <- function(x, digits = 3, ...) {
+  cat_quant_param_header(x)
+  print_transformer(x)
+  cat_quant_param_range(x)
+  cat_quant_param_values(x)
+  invisible(x)
+}
+
+cat_quant_param_header <- function(x) {
   if (!is.null(x$label)) {
-    cat(x$label, " (quantitative)\n")
-  } else
-    cat("Quantitative Parameter\n")
+    cat_line(x$label, " (quantitative)")
+  } else {
+    cat_line("Quantitative Parameter")
+  }
+}
+
+cat_quant_param_range <- function(x) {
+  label <- format_range_label(x, "Range")
+
+  range <- map_chr(x$range, format_range_val)
+  range <- format_range(x, range)
+
+  cat_line(label, range)
+}
+
+cat_quant_param_values <- function(x) {
+  values <- x$values
+
+  if (is.null(values)) {
+    return()
+  }
+
+  n_values <- length(values)
+
+  cat_line(glue("Values: {n_values}"))
+}
+
+print_transformer <- function(x) {
   if (!is.null(x$trans)) {
     print(eval(x$trans))
-    cat("Range (transformed scale): ")
-  } else
-    cat("Range: ")
+  }
+}
 
-  vals <- map_chr(x$range, format_range_val)
-  bnds <- format_bounds(x$inclusive)
-  cat(glue('{bnds[1]}{vals[1]}, {vals[2]}{bnds[2]}\n'))
-  cat("\n")
-  invisible(x)
+cat_line <- function (...) {
+  cat(paste0(..., "\n", collapse = ""))
 }
 
 #' @export
@@ -204,7 +233,3 @@ print.qual_param <- function(x, ...) {
     "\n")
   invisible(x)
 }
-
-
-
-

@@ -14,7 +14,8 @@
 #' of parameters.
 #'
 #' @param size A single integer for the total number of parameter value
-#' combinations returned for the random grid.
+#' combinations returned for the random grid. If duplicate combinations are
+#' generated from this size, the smaller, unique set is returned.
 #'
 #' @param original A logical: should the parameters be in the original units or
 #' in the transformed space (if any)?
@@ -208,7 +209,11 @@ new_param_grid <- function(x = new_data_frame()) {
   if (!is.data.frame(x)) {
     rlang::abort("`x` must be a data frame to construct a new grid from.")
   }
+  if (!tibble::is_tibble(x)) {
+    x <- tibble::as_tibble(x)
+  }
 
+  x <- x[vec_unique_loc(x),]
   size <- vec_size(x)
 
   # Strip down to a named list with no extra attributes. This serves

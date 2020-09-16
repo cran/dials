@@ -50,6 +50,10 @@ test_that('random grid', {
     nrow(grid_random(mixture(), trees(), size = 2)),
     2
   )
+  expect_lt(
+    nrow(grid_random(prod_degree(), prune_method(), size = 10)),
+    10
+  )
 })
 
 
@@ -88,3 +92,12 @@ test_that('filter arg yields same results', {
     with_seed(36L, grid_random(p, filter = mixture == .01))
   )
 })
+
+
+test_that('new param grid from conventional data frame', {
+ x <- data.frame(num_comp = 1:3)
+
+ expect_error(y <- dials:::new_param_grid(x), regexp = NA)
+ expect_true(tibble::is_tibble(y))
+})
+
