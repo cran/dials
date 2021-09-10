@@ -3,7 +3,7 @@
 #' @param x An object, such as a list of `param` objects or an actual `param`
 #' object.
 #' @param ... Only used for the `param` method so that multiple `param` objects
-#'can be passed to the function.
+#' can be passed to the function.
 #' @export
 parameters <- function(x, ...) {
   UseMethod("parameters")
@@ -273,18 +273,4 @@ identical_names <- function(x, y) {
   y_names <- names(y)
 
   identical(x_names, y_names)
-}
-
-# ------------------------------------------------------------------------------
-
-#' @export
-#' @rdname parameters
-param_set <- function(x, ...) {
-  rlang::warn(
-    paste0(
-      "`param_set()` is deprecated in favor of `parameters()`. ",
-      "`param_set()` will be available until version 0.0.5."
-    )
-  )
-  parameters(x, ...)
 }
