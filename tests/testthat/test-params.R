@@ -1,6 +1,4 @@
 
-context("qualitative parameter objects")
-
 test_that('param ranges', {
   expect_equal(min_n(1:2)$range, list(lower = 1L, upper = 2L))
   expect_equal(sample_size(1:2)$range, list(lower = 1L, upper = 2L))
@@ -66,6 +64,12 @@ test_that('param ranges', {
   expect_equal(shrinkage_frequencies(c(.1, .5))$range, list(lower = .1, upper = .5))
   expect_equal(penalty_L1(c(-5,3))$range, list(lower = -5, upper = 3))
   expect_equal(penalty_L2(c(-5,3))$range, list(lower = -5, upper = 3))
+  expect_equal(class_weights(c(1, 5))$range, list(lower = 1, upper = 5))
+  expect_equal(prior_terminal_node_coef(c(.1, .5))$range, list(lower = .1, upper = .5))
+  expect_equal(prior_terminal_node_expo(c(1, 2))$range, list(lower = 1, upper = 2))
+  expect_equal(prior_outcome_range(c(1, 5))$range, list(lower = 1, upper = 5))
+  expect_equal(num_knots(c(1, 5))$range, list(lower = 1, upper = 5))
+  expect_equal(vocabulary_size(c(1000, 10000))$range, list(lower = 1000, upper = 10000))
 })
 
 
@@ -87,6 +91,8 @@ test_that('param values', {
   expect_equal(select_features(TRUE)$values, TRUE)
   expect_equal(regularization_method()$values, dials:::values_regularization_method)
   expect_equal(diagonal_covariance(TRUE)$values, TRUE)
-
+  expect_equal(summary_stat()$values, values_summary_stat)
+  expect_equal(survival_link()$values, values_survival_link)
+  expect_equal(activation()$values, values_activation)
 })
 
