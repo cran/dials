@@ -1,13 +1,11 @@
 #' @export
 extract_parameter_dials.parameters <- function(x, parameter, ...) {
-  dots <- rlang::quos(...)
-  if (!rlang::is_empty(dots))
-    rlang::abort("The `...` are not used with `extract_parameter_dials()`.")
+  check_dots_empty()
   if (any(rlang::is_missing(parameter)) ||
-      any(!is.character(parameter)) ||
-      length(parameter) != 1 ||
-      is.na(parameter) ||
-      nchar(parameter) == 0) {
+    any(!is.character(parameter)) ||
+    length(parameter) != 1 ||
+    is.na(parameter) ||
+    nchar(parameter) == 0) {
     rlang::abort("Please supply a single 'parameter' string.")
   }
   which_id <- which(x$id == parameter)
