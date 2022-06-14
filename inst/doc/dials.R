@@ -56,6 +56,19 @@ mtcars_cp %>%
   value_sample(20) %>% 
   table()
 
+## ----custom-transform---------------------------------------------------------
+trans_raise <- scales::trans_new(
+  "raise", 
+  transform = function(x) 2^x , 
+  inverse = function(x) -log2(x)
+)
+custom_cost <- cost(range = c(1, 10), trans = trans_raise)
+custom_cost
+
+## ----custom-cost--------------------------------------------------------------
+-log2(c(10, 1))
+value_sample(custom_cost, 100) %>% range()
+
 ## ----wts----------------------------------------------------------------------
 weight_func()
 

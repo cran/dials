@@ -1,3 +1,16 @@
+# dials 1.0.0
+
+* The new parameter `mtry_prop()` is a variation on `mtry()` where the value is
+  interpreted as the proportion (rather than the count) of predictors that will 
+  be randomly sampled at each split (#233).
+
+* `conditional_test_statistic()` and `conditional_test_type()` now work with the
+  partykit engine rather than the party engine (#224).
+
+* `new_quant_param()` no longer requires `range` and `inclusive` if `values` is
+  supplied (#87).
+
+
 # dials 0.1.1
 
 * The `Chicago` data set was removed. It can be found in the `modeldata` package.
