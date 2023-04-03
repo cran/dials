@@ -17,6 +17,8 @@
 #' @param original A single logical. Should the range values be in the natural
 #'  units (`TRUE`) or in the transformed space (`FALSE`, if applicable)?
 #'
+#' @inheritParams new-param
+#'
 #' @return
 #'
 #' `value_validate()` throws an error or silently returns `values` if they are
@@ -70,12 +72,12 @@
 #' cost_complexity() %>% value_sample(2)
 #'
 #' @export
-value_validate <- function(object, values) {
+value_validate <- function(object, values, ..., call = caller_env()) {
   res <- switch(object$type,
     double = ,
-    integer = value_validate_quant(object, values),
+    integer = value_validate_quant(object, values, call = call),
     character = ,
-    logical = value_validate_qual(object, values)
+    logical = value_validate_qual(object, values, call = call)
   )
   unlist(res)
 }
@@ -138,7 +140,8 @@ value_seq <- function(object, n, original = TRUE) {
 
 value_seq_dbl <- function(object, n, original = TRUE) {
   if (!is.null(object$values)) {
-    res <- object$values[1:min(length(object$values), n)]
+    n_safely <- min(length(object$values), n)
+    res <- object$values[seq_len(n_safely)]
   } else {
     res <- seq(
       from = min(unlist(object$range)),
@@ -155,7 +158,8 @@ value_seq_dbl <- function(object, n, original = TRUE) {
 
 value_seq_int <- function(object, n, original = TRUE) {
   if (!is.null(object$values)) {
-    res <- object$values[1:min(length(object$values), n)]
+    n_safely <- min(length(object$values), n)
+    res <- object$values[seq_len(n_safely)]
   } else {
     res <- seq(
       from = min(unlist(object$range)),
@@ -175,7 +179,8 @@ value_seq_int <- function(object, n, original = TRUE) {
 }
 
 value_seq_qual <- function(object, n) {
-  res <- object$values[1:min(n, length(object$values))]
+  n_safely <- min(length(object$values), n)
+  res <- object$values[seq_len(n_safely)]
   res
 }
 
