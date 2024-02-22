@@ -23,8 +23,8 @@
 #' a warning will be thrown.
 #'
 #' @param trans A `trans` object from the \pkg{scales} package, such as
-#' [scales::log10_trans()] or [scales::reciprocal_trans()]. Create custom
-#' transforms with [scales::trans_new()].
+#' [scales::transform_log()] or [scales::transform_reciprocal()]. Create custom
+#' transforms with [scales::new_transform()].
 #'
 #' @param values A vector of possible values that is required when `type` is
 #' `"character"` or `"logical"` but optional otherwise. For quantitative
@@ -112,11 +112,14 @@ new_quant_param <- function(type = c("double", "integer"),
   }
 
   if (is.null(range)) {
-    rlang::abort("`range` must be supplied if `values` is `NULL`.", call = call)
+    cli::cli_abort(
+      "{.arg range} must be supplied if {.arg values} is {.code NULL}.",
+      call = call
+    )
   }
   if (is.null(inclusive)) {
-    rlang::abort(
-      "`inclusive` must be supplied if `values` is `NULL`.",
+    cli::cli_abort(
+      "{.arg inclusive} must be supplied if {.arg values} is {.code NULL}.",
       call = call
     )
   }
@@ -127,18 +130,16 @@ new_quant_param <- function(type = c("double", "integer"),
     range <- as.list(range)
   }
 
-  check_inclusive(inclusive)
+  check_inclusive(inclusive, call = call)
 
-  if (!is.null(trans)) {
-    if (!is.trans(trans)) {
-      rlang::abort(
-        c(
-          "`trans` must be a 'trans' class object (or `NULL`).",
-          i = "See `?scales::trans_new`."
-        ),
-        call = call
-      )
-    }
+  if (!is.null(trans) && !is.trans(trans)) {
+    cli::cli_abort(
+      c(
+        x = "{.arg trans} must be a {.cls trans} class object (or {.code NULL}).",
+        i = "See {.fn scales::trans_new}."
+      ),
+      call = call
+    )
   }
 
   check_label(label, call = call)
@@ -158,20 +159,16 @@ new_quant_param <- function(type = c("double", "integer"),
 
   if (!is.null(values)) {
     ok_vals <- value_validate(res, values, call = call)
-    if (all(ok_vals)) {
-      res$values <- values
-    } else {
-      msg <- paste0(
-        "Some values are not valid: ",
-        glue_collapse(
-          values[!ok_vals],
-          sep = ", ",
-          last = " and ",
-          width = min(options()$width - 30, 10)
-        )
+
+    if (!all(ok_vals)) {
+      offenders <- values[!ok_vals]
+      cli::cli_abort(
+        "Some values are not valid: {.val {offenders}}.",
+        call = call
       )
-      rlang::abort(msg, call = call)
     }
+
+    res$values <- values
   }
 
   res
