@@ -5,13 +5,11 @@
 \alias{grid_max_entropy.parameters}
 \alias{grid_max_entropy.list}
 \alias{grid_max_entropy.param}
-\alias{grid_max_entropy.workflow}
 \alias{grid_latin_hypercube}
 \alias{grid_latin_hypercube.parameters}
 \alias{grid_latin_hypercube.list}
 \alias{grid_latin_hypercube.param}
-\alias{grid_latin_hypercube.workflow}
-\title{Space-filling parameter grids}
+\title{Max-entropy and latin hypercube grids}
 \usage{
 grid_max_entropy(
   x,
@@ -49,15 +47,6 @@ grid_max_entropy(
   iter = 1000
 )
 
-\method{grid_max_entropy}{workflow}(
-  x,
-  ...,
-  size = 3,
-  original = TRUE,
-  variogram_range = 0.5,
-  iter = 1000
-)
-
 grid_latin_hypercube(x, ..., size = 3, original = TRUE)
 
 \method{grid_latin_hypercube}{parameters}(x, ..., size = 3, original = TRUE)
@@ -65,8 +54,6 @@ grid_latin_hypercube(x, ..., size = 3, original = TRUE)
 \method{grid_latin_hypercube}{list}(x, ..., size = 3, original = TRUE)
 
 \method{grid_latin_hypercube}{param}(x, ..., size = 3, original = TRUE)
-
-\method{grid_latin_hypercube}{workflow}(x, ..., size = 3, original = TRUE)
 }
 \arguments{
 \item{x}{A \code{param} object, list, or \code{parameters}.}
@@ -75,7 +62,7 @@ grid_latin_hypercube(x, ..., size = 3, original = TRUE)
 \code{\link[=penalty]{penalty()}}). None of the objects can have \code{unknown()} values in
 the parameter ranges or values.}
 
-\item{size}{A single integer for the total number of parameter value
+\item{size}{A single integer for the maximum number of parameter value
 combinations returned. If duplicate combinations are
 generated from this size, the smaller, unique set is returned.}
 
@@ -83,86 +70,20 @@ generated from this size, the smaller, unique set is returned.}
 in the transformed space (if any)?}
 
 \item{variogram_range}{A numeric value greater than zero. Larger values
-reduce the likelihood of empty regions in the parameter space.}
+reduce the likelihood of empty regions in the parameter space. Only used
+for \code{type = "max_entropy"}.}
 
 \item{iter}{An integer for the maximum number of iterations used to find
-a good design.}
+a good design. Only used for \code{type = "max_entropy"}.}
 }
 \description{
-Experimental designs for computer experiments are used to construct parameter
-grids that try to cover the parameter space such that any portion of the
-space has an observed combination that is not too far from it.
-}
-\details{
-The types of designs supported here are latin hypercube designs and designs
-that attempt to maximize the determinant of the spatial correlation matrix
-between coordinates. Both designs use random sampling of points in the
-parameter space.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
-Note that there may a difference in grids depending on how the function
-is called. If the call uses the parameter objects directly the possible
-ranges come from the objects in \code{dials}. For example:
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{mixture()
-}\if{html}{\out{</div>}}
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{## Proportion of Lasso Penalty (quantitative)
-## Range: [0, 1]
-}\if{html}{\out{</div>}}
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{set.seed(283)
-mix_grid_1 <- grid_latin_hypercube(mixture(), size = 1000)
-range(mix_grid_1$mixture)
-}\if{html}{\out{</div>}}
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{## [1] 0.0001530482 0.9999530388
-}\if{html}{\out{</div>}}
-
-However, in some cases, the \code{parsnip} and \code{recipe} packages overrides
-the default ranges for specific models and preprocessing steps. If the
-grid function uses a \code{parameters} object created from a model or recipe,
-the ranges may have different defaults (specific to those models). Using
-the example above, the \code{mixture} argument above is different for
-\code{glmnet} models:
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(parsnip)
-library(tune)
-
-# When used with glmnet, the range is [0.05, 1.00]
-glmn_mod <-
-  linear_reg(mixture = tune()) \%>\%
-  set_engine("glmnet")
-
-set.seed(283)
-mix_grid_2 <- grid_latin_hypercube(extract_parameter_set_dials(glmn_mod), size = 1000)
-range(mix_grid_2$mixture)
-}\if{html}{\out{</div>}}
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{## [1] 0.0501454 0.9999554
-}\if{html}{\out{</div>}}
+These functions are deprecated because they have been replaced by
+\code{\link[=grid_space_filling]{grid_space_filling()}}.
 }
 \examples{
-grid_max_entropy(
-  hidden_units(),
-  penalty(),
-  epochs(),
-  activation(),
-  learn_rate(c(0, 1), trans = scales::transform_log()),
-  size = 10,
-  original = FALSE
-)
-
 grid_latin_hypercube(penalty(), mixture(), original = TRUE)
-}
-\references{
-Sacks, Jerome & Welch, William & J. Mitchell, Toby, and Wynn, Henry.
-(1989). Design and analysis of computer experiments. With comments and a
-rejoinder by the authors. Statistical Science. 4. 10.1214/ss/1177012413.
 
-Santner, Thomas, Williams, Brian, and Notz, William. (2003). The Design and
-Analysis of Computer Experiments. Springer.
-
-Dupuy, D., Helbert, C., and Franco, J. (2015). DiceDesign and DiceEval: Two R
-packages for design and analysis of computer experiments. Journal of
-Statistical Software, 65(11)
 }
+\keyword{internal}

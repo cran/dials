@@ -1,3 +1,24 @@
+# dials 1.3.0
+
+## Improvements
+
+* The space-filling design functionality was expanded to include several new types of designs: Audze-Eglais, max/min L1, max/min L2, and uniform. These are all pre-computed designs accessed from the sfd package (#329).
+
+* A new function is used to access all of the space-filling designs called `grid_space_filling()` (#329).
+
+* Two new parameters, `activation_2()` and `hidden_units_2()`, for use with `brulee::brulee_mlp_two_layer()` (#339).
+
+## Deprecations
+
+* `grid_max_entropy()` and `grid_latin_hypercube()` are deprecated in favor of `grid_space_filling()` (#332).
+
+* `pull_dials_object()` has been removed (#344).
+
+* The `grid_*()` methods for `workflow` objects have been removed (#344).
+
+* The deprecation of the `default` argument to the constructors `new_quant_param()` and `new_qual_param()` has been escalated to an error (#344).
+
+
 # dials 1.2.1
 
 ## New parameters
