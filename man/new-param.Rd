@@ -58,15 +58,16 @@ parameters, this can be used as an alternative to \code{range} and \code{inclusi
 If set, these will be used by \code{\link[=value_seq]{value_seq()}} and \code{\link[=value_sample]{value_sample()}}.}
 
 \item{label}{An optional named character string that can be used for
-printing and plotting. The name should match the object name (e.g.
-\code{"mtry"}, \code{"neighbors"}, etc.)}
+printing and plotting. The name of the label should match the object name
+(e.g., \code{"mtry"}, \code{"neighbors"}, etc.). If \code{NULL}, the parameter will be
+labeled with \code{"Unlabeled parameter"}.}
 
 \item{finalize}{A function that can be used to set the data-specific
 values of a parameter (such as the \code{range}).}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{call}{The call passed on to \code{\link[rlang:abort]{rlang::abort()}}.}
+\item{call}{The call passed on to \code{\link[cli:cli_abort]{cli::cli_abort()}}.}
 }
 \value{
 An object of class \code{"param"} with the primary class being either

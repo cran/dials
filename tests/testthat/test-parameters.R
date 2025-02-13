@@ -1,14 +1,18 @@
 test_that("parameters_const() input checks", {
   expect_snapshot(error = TRUE, {
-    parameters_constr(2)
+    parameters_constr(name = 2)
   })
   expect_snapshot(error = TRUE, {
     ab <- c("a", "b")
-    parameters_constr(ab, c("a", "a"), ab, ab, ab)
+    parameters_constr(ab, id = c("a", "a"), ab, ab, ab)
   })
   expect_snapshot(error = TRUE, {
     ab <- c("a", "b")
-    parameters_constr(ab, ab, ab, ab, ab, "not a params list")
+    parameters_constr(ab, ab, ab, ab, ab, object = "not a params list")
+  })
+  expect_snapshot(error = TRUE, {
+    ab <- c("a", "b")
+    parameters_constr(ab, ab, ab, ab, ab, object = list(penalty(), "not a param"))
   })
   expect_snapshot(error = TRUE, {
     ab <- c("a", "b")
@@ -21,31 +25,34 @@ test_that("parameters_const() input checks", {
 })
 
 test_that("create from param objects", {
-  expect_error(p_1 <- parameters(mtry(), penalty()), NA)
+  expect_no_condition(p_1 <- parameters(mtry(), penalty()))
   expect_s3_class_parameters(p_1)
   expect_equal(p_1 %>% nrow(), 2)
 
-  expect_error(p_2 <- parameters(penalty()), NA)
+  expect_no_condition(p_2 <- parameters(penalty()))
   expect_s3_class_parameters(p_2)
   expect_equal(p_2 %>% nrow(), 1)
 })
 
 
 test_that("create from lists of param objects", {
-  expect_error(p_1 <- parameters(list(mtry(), penalty())), NA)
+  expect_no_condition(p_1 <- parameters(list(mtry(), penalty())))
   expect_s3_class_parameters(p_1)
   expect_equal(p_1 %>% nrow(), 2)
 
-  expect_error(p_2 <- parameters(list(penalty())), NA)
+  expect_no_condition(p_2 <- parameters(list(penalty())))
   expect_s3_class_parameters(p_2)
   expect_equal(p_2 %>% nrow(), 1)
 
-  expect_error(p_3 <- parameters(list(a = mtry(), "some name" = penalty())), NA)
+  expect_no_condition(
+    p_3 <- parameters(list(a = mtry(), "some name" = penalty()))
+  )
   expect_s3_class_parameters(p_3)
   expect_equal(p_3 %>% nrow(), 2)
   expect_equal(p_3$id, c("a", "some name"))
 
   expect_snapshot(error = TRUE, parameters(list(a = mtry(), a = penalty())))
+  expect_snapshot(error = TRUE, parameters(list(a = mtry, a = penalty())))
 })
 
 test_that("updating", {
@@ -61,8 +68,10 @@ test_that("updating", {
 
   expect_snapshot(error = TRUE, update(p_1, new_pen))
   expect_snapshot(error = TRUE, update(p_1, penalty = 1:2))
+  expect_snapshot(error = TRUE, update(p_1, not_penalty = 1:2))
   expect_snapshot(error = TRUE, update(p_1, penalty(), mtry = mtry(3:4)))
-  expect_error(update(p_1, penalty = NA), NA)
+  expect_no_condition(update(p_1, penalty = NA))
+  expect_snapshot(error = TRUE, update(p_1))
 })
 
 test_that("printing", {

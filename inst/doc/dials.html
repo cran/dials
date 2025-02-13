@@ -132,10 +132,7 @@ different for different data types.</p>
 parameter of CART trees, otherwise known as <span class="math inline">\(C_p\)</span>. A parameter object for <span class="math inline">\(C_p\)</span> can be created in <code>dials</code>
 using:</p>
 <pre class="r"><code>library(dials)
-cost_complexity()
-#&gt; Cost-Complexity Parameter (quantitative)
-#&gt; Transformer: log-10 [1e-100, Inf]
-#&gt; Range (transformed scale): [-10, -1]</code></pre>
+cost_complexity()</code></pre>
 <p>Note that this parameter is handled in log units and the default
 range of values is between <code>10^-10</code> and <code>0.1</code>. The
 range of possible values can be returned and changed based on some
@@ -148,16 +145,10 @@ cost_complexity() %&gt;% range_get()
 #&gt; $upper
 #&gt; [1] 0.1
 cost_complexity() %&gt;% range_set(c(-5, 1))
-#&gt; Cost-Complexity Parameter (quantitative)
-#&gt; Transformer: log-10 [1e-100, Inf]
-#&gt; Range (transformed scale): [-5, 1]
 
 # Or using the `range` argument
 # during creation
-cost_complexity(range = c(-5, 1))
-#&gt; Cost-Complexity Parameter (quantitative)
-#&gt; Transformer: log-10 [1e-100, Inf]
-#&gt; Range (transformed scale): [-5, 1]</code></pre>
+cost_complexity(range = c(-5, 1))</code></pre>
 <p>Values for this parameter can be obtained in a few different ways. To
 get a sequence of values that span the range:</p>
 <pre class="r"><code># Natural units:
@@ -199,11 +190,7 @@ mtcars_cp &lt;- cost_complexity() %&gt;% value_set(cp_vals)
 <p>The error occurs because the values are not in the transformed
 scale:</p>
 <pre class="r"><code>mtcars_cp &lt;- cost_complexity() %&gt;% value_set(log10(cp_vals))
-mtcars_cp
-#&gt; Cost-Complexity Parameter (quantitative)
-#&gt; Transformer: log-10 [1e-100, Inf]
-#&gt; Range (transformed scale): [-10, -1]
-#&gt; Values: 2</code></pre>
+mtcars_cp</code></pre>
 <p>Now, if a sequence or random sample is requested, it uses the set
 values:</p>
 <pre class="r"><code>mtcars_cp %&gt;% value_seq(2)
@@ -224,10 +211,7 @@ with the numeric parameters, or a custom transformation generated with
   inverse = function(x) -log2(x)
 )
 custom_cost &lt;- cost(range = c(1, 10), trans = trans_raise)
-custom_cost
-#&gt; Cost (quantitative)
-#&gt; Transformer: raise [-Inf, Inf]
-#&gt; Range (transformed scale): [1, 10]</code></pre>
+custom_cost</code></pre>
 <p>Note that if a transformation is used, the <code>range</code>
 argument specifies the parameter range <em>on the transformed
 scale</em>. For this version of <code>cost()</code>, parameter values
@@ -246,15 +230,11 @@ value_sample(custom_cost, 100) %&gt;% range()
 objects are defined by their discrete values. For example, consider a
 parameter for the types of kernel functions that is used with distance
 functions:</p>
-<pre class="r"><code>weight_func()
-#&gt; Distance Weighting Function  (qualitative)
-#&gt; &#39;rectangular&#39;, &#39;triangular&#39;, &#39;epanechnikov&#39;, &#39;biweight&#39;, &#39;triweight&#39;, &#39;cos&#39;, ...</code></pre>
+<pre class="r"><code>weight_func()</code></pre>
 <p>The helper functions are analogues to the quantitative
 parameters:</p>
 <pre class="r"><code># redefine values
 weight_func() %&gt;% value_set(c(&quot;rectangular&quot;, &quot;triangular&quot;))
-#&gt; Distance Weighting Function  (qualitative)
-#&gt; &#39;rectangular&#39; and &#39;triangular&#39;
 weight_func() %&gt;% value_sample(3)
 #&gt; [1] &quot;triangular&quot; &quot;inv&quot;        &quot;triweight&quot;
 
@@ -279,24 +259,14 @@ cannot be known if the number of data points in the training set is not
 known. For that reason, some parameters have an <em>unknown</em>
 placeholder:</p>
 <pre class="r"><code>mtry()
-#&gt; # Randomly Selected Predictors (quantitative)
-#&gt; Range: [1, ?]
 sample_size()
-#&gt; # Observations Sampled (quantitative)
-#&gt; Range: [?, ?]
 num_terms()
-#&gt; # Model Terms (quantitative)
-#&gt; Range: [1, ?]
 num_comp()
-#&gt; # Components (quantitative)
-#&gt; Range: [1, ?]
 # and so on</code></pre>
 <p>These values must be initialized prior to generating parameter
 values. The <code>finalize()</code> methods can be used to help remove
 the unknowns:</p>
-<pre class="r"><code>finalize(mtry(), x = mtcars[, -1])
-#&gt; # Randomly Selected Predictors (quantitative)
-#&gt; Range: [1, 10]</code></pre>
+<pre class="r"><code>finalize(mtry(), x = mtcars[, -1])</code></pre>
 </div>
 <div id="parameter-sets" class="section level2">
 <h2>Parameter Sets</h2>
@@ -305,19 +275,9 @@ object. They can also be created manually and can have alternate
 identification fields:</p>
 <pre class="r"><code>glmnet_set &lt;- parameters(list(lambda = penalty(), alpha = mixture()))
 glmnet_set
-#&gt; Collection of 2 parameters for tuning
-#&gt; 
-#&gt;  identifier    type    object
-#&gt;      lambda penalty nparam[+]
-#&gt;       alpha mixture nparam[+]
 
 # can be updated too
-update(glmnet_set, alpha = mixture(c(.3, .6)))
-#&gt; Collection of 2 parameters for tuning
-#&gt; 
-#&gt;  identifier    type    object
-#&gt;      lambda penalty nparam[+]
-#&gt;       alpha mixture nparam[+]</code></pre>
+update(glmnet_set, alpha = mixture(c(.3, .6)))</code></pre>
 <p>These objects can be very helpful when creating tuning grids.</p>
 </div>
 <div id="parameter-grids" class="section level2">

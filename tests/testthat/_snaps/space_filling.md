@@ -22,6 +22,15 @@
       x This argument contains unknowns: `mtry`.
       i See the `dials::finalize()` function.
 
+---
+
+    Code
+      grid_max_entropy(mixture(), levels = 11)
+    Condition
+      Error in `grid_max_entropy()`:
+      ! `levels` is not an argument to `grid_max_entropy()`.
+      i Did you mean `size`?
+
 # `grid_latin_hypercube()` is deprecated
 
     Code
@@ -46,19 +55,21 @@
       x This argument contains unknowns: `mtry`.
       i See the `dials::finalize()` function.
 
+---
+
+    Code
+      grid_latin_hypercube(mixture(), levels = 11)
+    Condition
+      Error in `grid_latin_hypercube()`:
+      ! `levels` is not an argument to `grid_latin_hypercube()`.
+      i Did you mean `size`?
+
 # S3 methods for space-filling
 
     Code
-      des <- grid_space_filling(prm, levels = size, type = "uniform")
+      grid_space_filling(prm, levels = size, type = "uniform")
     Condition
-      Warning:
-      `levels` is not an argument to `grid_space_filling()`. Did you mean `size`?
-
-# very small designs
-
-    Due to the small size of the grid, a Latin hypercube design will be used.
-
----
-
-    Due to the small size of the grid, a Latin hypercube design will be used.
+      Error in `grid_space_filling()`:
+      ! `levels` is not an argument to `grid_space_filling()`.
+      i Did you mean `size`?
 

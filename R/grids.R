@@ -49,7 +49,12 @@
 grid_regular <- function(x, ..., levels = 3, original = TRUE, filter = NULL) {
   dots <- list(...)
   if (any(names(dots) == "size")) {
-    rlang::warn("`size` is not an argument to `grid_regular()`. Did you mean `levels`?")
+    cli::cli_abort(
+      c(
+        "{.arg size} is not an argument to {.fn grid_regular}.",
+        i = "Did you mean {.arg levels}?"
+      )
+    )
   }
   UseMethod("grid_regular")
 }
@@ -130,8 +135,8 @@ make_regular_grid <- function(...,
   # check levels
   p <- length(levels)
   if (p > 1 && p != length(param_quos)) {
-    rlang::abort(
-      paste0("`levels` should have length 1 or ", length(param_quos)),
+    cli::cli_abort(
+      "{.arg levels} should have length 1 or {length(param_quos)}, not {p}.",
       call = call
     )
   }
@@ -142,8 +147,9 @@ make_regular_grid <- function(...,
     if (all(rlang::has_name(levels, names(params)))) {
       levels <- levels[names(params)]
     } else if (any(rlang::has_name(levels, names(params)))) {
-      rlang::abort(
-        "Elements of `levels` should either be all named or unnamed, not mixed.",
+      cli::cli_abort(
+        "Elements of {.arg levels} should either be all named or unnamed, 
+        not mixed.",
         call = call
       )
     }
@@ -166,8 +172,11 @@ make_regular_grid <- function(...,
 grid_random <- function(x, ..., size = 5, original = TRUE, filter = NULL) {
   dots <- list(...)
   if (any(names(dots) == "levels")) {
-    rlang::warn(
-      "`levels` is not an argument to `grid_random()`. Did you mean `size`?"
+    cli::cli_abort(
+      c(
+        "{.arg levels} is not an argument to {.fn grid_random}.",
+        i = "Did you mean {.arg size}?"
+      )
     )
   }
   UseMethod("grid_random")
@@ -252,7 +261,9 @@ make_random_grid <- function(...,
 
 new_param_grid <- function(x = new_data_frame()) {
   if (!is.data.frame(x)) {
-    rlang::abort("`x` must be a data frame to construct a new grid from.")
+    cli::cli_abort(
+      "{.arg x} must be a data frame to construct a new grid from."
+    )
   }
 
   x <- vctrs::vec_unique(x)

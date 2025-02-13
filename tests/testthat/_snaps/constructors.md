@@ -36,7 +36,8 @@
       new_quant_param("double", range = c(1, NA), inclusive = c(TRUE, TRUE))
     Condition
       Error:
-      ! Value ranges must be non-missing.
+      x Value ranges must be non-missing.
+      i `Inf` and `unknown()` are acceptable values.
 
 ---
 
@@ -60,7 +61,8 @@
       new_quant_param("double", range = c(1, NA), inclusive = c(TRUE, TRUE))
     Condition
       Error:
-      ! Value ranges must be non-missing.
+      x Value ranges must be non-missing.
+      i `Inf` and `unknown()` are acceptable values.
 
 ---
 
@@ -103,13 +105,33 @@
       Error:
       ! `finalize` must be a function or `NULL`, not the string "not a function or NULL".
 
+# integer parameter: compatibility of `inclusive` and `range` (#373)
+
+    Code
+      new_quant_param(type = "integer", range = c(0, 1), inclusive = c(FALSE, FALSE),
+      trans = NULL, label = c(param_non_incl = "some label"), finalize = NULL)
+    Condition
+      Error:
+      ! `inclusive` must be `c(TRUE, TRUE)` when the `range` only covers two consecutive values.
+
+---
+
+    Code
+      new_quant_param(type = "integer", range = c(0, 1), inclusive = c(FALSE, TRUE),
+      trans = NULL, label = c(param_non_incl = "some label"), finalize = NULL)
+    Condition
+      Error:
+      ! `inclusive` must be `c(TRUE, TRUE)` when the `range` only covers two consecutive values.
+
 # bad args to range_validate
 
     Code
       range_validate(mtry(), range = 1)
     Condition
       Error:
-      ! `range` must have two values: an upper and lower bound. `Inf` and `unknown()` are acceptable values.
+      x `range` must have two values: an upper and lower bound.
+      i 1 value was provided.
+      i `Inf` and `unknown()` are acceptable values.
 
 ---
 
@@ -117,7 +139,8 @@
       range_validate(mtry(), range = c(1, NA))
     Condition
       Error:
-      ! Value ranges must be non-missing.
+      x Value ranges must be non-missing.
+      i `Inf` and `unknown()` are acceptable values.
 
 ---
 
@@ -134,12 +157,13 @@
     Condition
       Error:
       ! Value ranges must be numeric.
+      i `Inf` and `unknown()` are acceptable values.
 
 # printing
 
     Code
       mtry()
-    Output
+    Message
       # Randomly Selected Predictors (quantitative)
       Range: [1, ?]
 
@@ -147,22 +171,52 @@
 
     Code
       surv_dist()
-    Output
-      Distribution  (qualitative)
     Message
+      Distribution (qualitative)
       6 possible values include:
-    Output
-      'weibull', 'exponential', 'gaussian', 'logistic', 'lognormal' and 'loglogistic' 
+      'weibull', 'exponential', 'gaussian', 'logistic', 'lognormal', and
+      'loglogistic'
 
 ---
 
     Code
       value_set(cost_complexity(), log10(c(0.09, 1e-04)))
-    Output
+    Message
       Cost-Complexity Parameter (quantitative)
       Transformer: log-10 [1e-100, Inf]
       Range (transformed scale): [-10, -1]
       Values: 2
+
+---
+
+    Code
+      mtry_ish <- mtry()
+      mtry_ish$label <- NULL
+      print(mtry_ish)
+    Message
+      Quantitative Parameter
+      Range: [1, ?]
+
+---
+
+    Code
+      fun_ish <- weight_func()
+      fun_ish$label <- NULL
+      print(fun_ish)
+    Message
+      Qualitative Parameter
+      9 possible values include:
+      'rectangular', 'triangular', 'epanechnikov', 'biweight', 'triweight', 'cos',
+      'inv', 'gaussian', and 'rank'
+
+---
+
+    Code
+      signed_hash()
+    Message
+      Signed Hash Value (qualitative)
+      2 possible values include:
+      TRUE and FALSE
 
 # bad ranges
 
@@ -170,7 +224,7 @@
       mixture(c(1L, 3L))
     Condition
       Error in `mixture()`:
-      ! Since `type = 'double'`, please use that data type for the range.
+      ! Since `type = "double"`, please use that data type for the range.
 
 ---
 
@@ -178,7 +232,7 @@
       mixture(c(1L, unknown()))
     Condition
       Error in `mixture()`:
-      ! Since `type = 'double'`, please use that data type for the range.
+      ! Since `type = "double"`, please use that data type for the range.
 
 ---
 
@@ -186,7 +240,7 @@
       mixture(c(unknown(), 1L))
     Condition
       Error in `mixture()`:
-      ! Since `type = 'double'`, please use that data type for the range.
+      ! Since `type = "double"`, please use that data type for the range.
 
 ---
 
@@ -194,7 +248,7 @@
       mixture(letters[1:2])
     Condition
       Error in `mixture()`:
-      ! Since `type = 'double'`, please use that data type for the range.
+      ! Since `type = "double"`, please use that data type for the range.
 
 ---
 
@@ -202,7 +256,7 @@
       mtry(c(0.1, 0.5))
     Condition
       Error in `mtry()`:
-      ! An integer is required for the range and these do not appear to be whole numbers: 0.1, 0.5
+      ! An integer is required for the range and these do not appear to be whole numbers: 0.1 and 0.5.
 
 ---
 
@@ -210,7 +264,7 @@
       mtry(c(0.1, unknown()))
     Condition
       Error in `mtry()`:
-      ! An integer is required for the range and these do not appear to be whole numbers: 0.1
+      ! An integer is required for the range and these do not appear to be whole numbers: 0.1.
 
 ---
 
@@ -218,7 +272,7 @@
       mtry(c(unknown(), 0.5))
     Condition
       Error in `mtry()`:
-      ! An integer is required for the range and these do not appear to be whole numbers: 0.5
+      ! An integer is required for the range and these do not appear to be whole numbers: 0.5.
 
 # `values` must be compatible with `range` and `inclusive`
 

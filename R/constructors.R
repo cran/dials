@@ -32,15 +32,16 @@
 #' If set, these will be used by [value_seq()] and [value_sample()].
 #'
 #' @param label An optional named character string that can be used for
-#' printing and plotting. The name should match the object name (e.g.
-#' `"mtry"`, `"neighbors"`, etc.)
+#' printing and plotting. The name of the label should match the object name 
+#' (e.g., `"mtry"`, `"neighbors"`, etc.). If `NULL`, the parameter will be 
+#' labeled with `"Unlabeled parameter"`.
 #'
 #' @param finalize A function that can be used to set the data-specific
 #' values of a parameter (such as the `range`).
 #'
 #' @inheritParams rlang::args_dots_empty
 #'
-#' @param call The call passed on to [rlang::abort()].
+#' @param call The call passed on to [cli::cli_abort()].
 #'
 #' @return
 #'
@@ -76,16 +77,18 @@ NULL
 
 #' @export
 #' @rdname new-param
-new_quant_param <- function(type = c("double", "integer"),
-                            range = NULL,
-                            inclusive = NULL,
-                            default = deprecated(),
-                            trans = NULL,
-                            values = NULL,
-                            label = NULL,
-                            finalize = NULL,
-                            ...,
-                            call = caller_env()) {
+new_quant_param <- function(
+  type = c("double", "integer"),
+  range = NULL,
+  inclusive = NULL,
+  default = deprecated(),
+  trans = NULL,
+  values = NULL,
+  label = NULL,
+  finalize = NULL,
+  ...,
+  call = caller_env()
+) {
   if (lifecycle::is_present(default)) {
     lifecycle::deprecate_stop(
       when = "1.1.0",
@@ -132,6 +135,19 @@ new_quant_param <- function(type = c("double", "integer"),
 
   check_inclusive(inclusive, call = call)
 
+  if (type == "integer" && !any(is_unknown(range))) {
+    range_of_2_consecutive_values <- identical(range[[1]] + 1L, range[[2]])
+    if (range_of_2_consecutive_values) {
+      if (!all(inclusive)) {
+        cli::cli_abort(
+          "{.arg inclusive} must be {.code c(TRUE, TRUE)} when the {.arg range} 
+          only covers two consecutive values.",
+          call = call
+        )
+      }
+    }
+  }
+
   if (!is.null(trans) && !is.trans(trans)) {
     cli::cli_abort(
       c(
@@ -143,6 +159,11 @@ new_quant_param <- function(type = c("double", "integer"),
   }
 
   check_label(label, call = call)
+  if (is.null(label)) {
+    label = "Unlabeled parameter"
+    names(label) <- "Unlabeled parameter"
+  }
+
   check_function(finalize, allow_null = TRUE, call = call)
 
   names(range) <- names(inclusive) <- c("lower", "upper")
@@ -176,16 +197,18 @@ new_quant_param <- function(type = c("double", "integer"),
 
 #' @export
 #' @rdname new-param
-new_qual_param <- function(type = c("character", "logical"),
-                           values,
-                           default = deprecated(),
-                           label = NULL,
-                           finalize = NULL,
-                           ...,
-                           call = caller_env()) {
+new_qual_param <- function(
+  type = c("character", "logical"),
+  values,
+  default = deprecated(),
+  label = NULL,
+  finalize = NULL,
+  ...,
+  call = caller_env()
+) {
   if (lifecycle::is_present(default)) {
     lifecycle::deprecate_stop(
-      when = "1.1.0", 
+      when = "1.1.0",
       what = "new_qual_param(default)"
     )
   }
@@ -197,7 +220,13 @@ new_qual_param <- function(type = c("character", "logical"),
     "logical" = check_logical(values, call = call),
     "character" = check_character(values, call = call)
   )
+
   check_label(label, call = call)
+  if (is.null(label)) {
+    label = "Unlabeled parameter"
+    names(label) <- "Unlabeled parameter"
+  }
+
   check_function(finalize, allow_null = TRUE, call = call)
 
   res <- list(
@@ -216,31 +245,31 @@ new_qual_param <- function(type = c("character", "logical"),
 
 #' @export
 print.quant_param <- function(x, digits = 3, ...) {
-  cat_quant_param_header(x)
-  print_transformer(x)
-  cat_quant_param_range(x)
-  cat_quant_param_values(x)
+  print_quant_param_header(x)
+  print_quant_param_transformer(x)
+  print_quant_param_range(x)
+  print_quant_param_values(x)
   invisible(x)
 }
 
-cat_quant_param_header <- function(x) {
+print_quant_param_header <- function(x) {
   if (!is.null(x$label)) {
-    cat_line(x$label, " (quantitative)")
+    cli::cli_text("{x$label} (quantitative)")
   } else {
-    cat_line("Quantitative Parameter")
+    cli::cli_text("Quantitative Parameter")
   }
 }
 
-cat_quant_param_range <- function(x) {
+print_quant_param_range <- function(x) {
   label <- format_range_label(x, "Range")
 
   range <- map_chr(x$range, format_range_val)
   range <- format_range(x, range)
 
-  cat_line(label, range)
+  cli::cli_text("{label}{range}")
 }
 
-cat_quant_param_values <- function(x) {
+print_quant_param_values <- function(x) {
   values <- x$values
 
   if (is.null(values)) {
@@ -249,26 +278,24 @@ cat_quant_param_values <- function(x) {
 
   n_values <- length(values)
 
-  cat_line(glue("Values: {n_values}"))
+  cli::cli_text("Values: {n_values}")
 }
 
-print_transformer <- function(x) {
+print_quant_param_transformer <- function(x) {
   if (!is.null(x$trans)) {
-    print(eval(x$trans))
+    text <- utils::capture.output(eval(x$trans))
+    cli::cli_verbatim(text)
   }
-}
-
-cat_line <- function(...) {
-  cat(paste0(..., "\n", collapse = ""))
 }
 
 #' @export
 print.qual_param <- function(x, ...) {
   if (!is.null(x$label)) {
-    cat(x$label, " (qualitative)\n")
+    cli::cli_text("{x$label} (qualitative)")
   } else {
-    cat("Qualitative Parameter\n")
+    cli::cli_text("Qualitative Parameter")
   }
+
   n_values <- length(x$values)
   cli::cli_text("{n_values} possible value{?s} include:")
   if (x$type == "character") {
@@ -276,14 +303,7 @@ print.qual_param <- function(x, ...) {
   } else {
     lvls <- x$values
   }
-  cat(
-    glue_collapse(
-      lvls,
-      sep = ", ",
-      last = " and ",
-      width = options()$width
-    ),
-    "\n"
-  )
+  cli::cli_text("{lvls}")
+
   invisible(x)
 }

@@ -31,13 +31,15 @@ test_that("max entropy designs", {
   )
   expect_equal(ncol(grid_3), 1L)
 
-  expect_error(
-    grid_max_entropy(
-      cost,
-      size = 11,
-      original = FALSE
-    )
+  grid_4 <- grid_max_entropy(
+    list(cost = cost(), mix = mixture()),
+    size = 11,
+    original = FALSE
   )
+  expect_equal(nrow(grid_4), 11L)
+  expect_true(all(grid_4$mix > 0 & grid_4$mix < 1))
+  expect_true(all(grid_4$cost > -10 & grid_4$cost < 5))
+
   expect_snapshot(
     error = TRUE,
     grid_max_entropy(
@@ -46,10 +48,12 @@ test_that("max entropy designs", {
       original = FALSE
     )
   )
-  expect_error(
+
+  expect_snapshot(
+    error = TRUE,
     grid_max_entropy(
-      size = 11,
-      original = FALSE
+      mixture(),
+      levels = 11
     )
   )
 })
@@ -87,18 +91,20 @@ test_that("latin square designs", {
   )
   expect_equal(ncol(grid_3), 1L)
 
+  grid_4 <- grid_latin_hypercube(
+    list(cost = cost(), mix = mixture()),
+    size = 11,
+    original = FALSE
+  )
+  expect_equal(nrow(grid_4), 11L)
+  expect_true(all(grid_4$mix > 0 & grid_4$mix < 1))
+  expect_true(all(grid_4$cost > -10 & grid_4$cost < 5))
+
   expect_lt(
     nrow(grid_latin_hypercube(prod_degree(), prune_method(), size = 20)),
     20
   )
 
-  expect_error(
-    grid_latin_hypercube(
-      cost,
-      size = 11,
-      original = FALSE
-    )
-  )
   expect_snapshot(
     error = TRUE,
     grid_latin_hypercube(
@@ -107,10 +113,12 @@ test_that("latin square designs", {
       original = FALSE
     )
   )
-  expect_error(
+
+  expect_snapshot(
+    error = TRUE,
     grid_latin_hypercube(
-      size = 11,
-      original = FALSE
+      mixture(),
+      levels = 11
     )
   )
 })
@@ -305,25 +313,16 @@ test_that("S3 methods for space-filling", {
   expect_equal(design_paramset, design_list)
 
   ## also:
-  expect_snapshot(
-    des <- grid_space_filling(prm, levels = size, type = "uniform")
-  )
-
+  expect_snapshot(error = TRUE, {
+    grid_space_filling(prm, levels = size, type = "uniform")
+  })
 })
 
-test_that("very small designs", {
-
-  expect_snapshot_warning({
-    set.seed(1)
-    small_1 <- grid_space_filling(parameters(neighbors()), size = 1)
+test_that("1-point grid", {
+   expect_silent({
+     set.seed(1)
+     grid <- grid_space_filling(parameters(neighbors()), size = 1)
   })
-  expect_equal(dim(small_1), c(1L, 1L))
-
-  expect_snapshot_warning({
-    set.seed(1)
-    small_2 <- grid_space_filling(parameters(neighbors(), mixture(), penalty()),
-                                  size = 2)
-  })
-  expect_equal(dim(small_2), c(2L, 3L))
-
+  expect_equal(nrow(grid), 1L)
 })
+

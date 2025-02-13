@@ -59,6 +59,41 @@ test_that("quantitative parameter object creation - bad args", {
   )
 })
 
+test_that("integer parameter: compatibility of `inclusive` and `range` (#373)", {
+  # if range covers only two consecutive integer values,
+  # `inclusive = c(FALSE, FALSE)` would leave no values to sample from
+  # and `inclusive = c(FALSE, TRUE)` would leave only one value
+  expect_snapshot(error = TRUE, {
+    new_quant_param(
+      type = "integer",
+      range = c(0, 1),
+      inclusive = c(FALSE, FALSE),
+      trans = NULL,
+      label = c(param_non_incl = "some label"),
+      finalize = NULL
+    )
+  })
+  expect_snapshot(error = TRUE, {
+    new_quant_param(
+      type = "integer",
+      range = c(0, 1),
+      inclusive = c(FALSE, TRUE),
+      trans = NULL,
+      label = c(param_non_incl = "some label"),
+      finalize = NULL
+    )
+  })
+  expect_no_error({
+    new_quant_param(
+      type = "integer",
+      range = c(0, 1),
+      inclusive = c(TRUE, TRUE),
+      trans = NULL,
+      label = c(param_non_incl = "some label"),
+      finalize = NULL
+    )
+  })
+})
 
 test_that("bad args to range_validate", {
   expect_snapshot(
@@ -87,6 +122,20 @@ test_that("printing", {
   expect_snapshot(
     value_set(cost_complexity(), log10(c(.09, .0001)))
   )
+
+  expect_snapshot({
+    mtry_ish <- mtry()
+    mtry_ish$label <- NULL
+    print(mtry_ish)
+  })
+
+  expect_snapshot({
+    fun_ish <- weight_func()
+    fun_ish$label <- NULL
+    print(fun_ish)
+  })
+
+  expect_snapshot(signed_hash())
 })
 
 
