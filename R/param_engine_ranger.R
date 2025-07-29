@@ -23,7 +23,7 @@ regularization_factor <- function(range = c(0, 1), trans = NULL) {
   new_quant_param(
     type = "double",
     range = range,
-    inclusive = c(TRUE, TRUE),
+    inclusive = c(FALSE, TRUE),
     trans = trans,
     label = c(regularization_factor = "Gain Penalization"),
     finalize = NULL
@@ -43,7 +43,10 @@ regularize_depth <- function(values = c(TRUE, FALSE)) {
 
 #' @export
 #' @rdname ranger_parameters
-significance_threshold <- function(range = c(-10, 0), trans = transform_log10()) {
+significance_threshold <- function(
+  range = c(-10, 0),
+  trans = transform_log10()
+) {
   new_quant_param(
     type = "double",
     range = range,

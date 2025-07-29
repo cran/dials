@@ -136,15 +136,14 @@ cost_complexity()</code></pre>
 <p>Note that this parameter is handled in log units and the default
 range of values is between <code>10^-10</code> and <code>0.1</code>. The
 range of possible values can be returned and changed based on some
-utility functions. We’ll use the pipe operator here:</p>
-<pre class="r"><code>library(dplyr)
-cost_complexity() %&gt;% range_get()
+utility functions.</p>
+<pre class="r"><code>cost_complexity() |&gt; range_get()
 #&gt; $lower
 #&gt; [1] 1e-10
 #&gt; 
 #&gt; $upper
 #&gt; [1] 0.1
-cost_complexity() %&gt;% range_set(c(-5, 1))
+cost_complexity() |&gt; range_set(c(-5, 1))
 
 # Or using the `range` argument
 # during creation
@@ -152,11 +151,11 @@ cost_complexity(range = c(-5, 1))</code></pre>
 <p>Values for this parameter can be obtained in a few different ways. To
 get a sequence of values that span the range:</p>
 <pre class="r"><code># Natural units:
-cost_complexity() %&gt;% value_seq(n = 4)
+cost_complexity() |&gt; value_seq(n = 4)
 #&gt; [1] 1e-10 1e-07 1e-04 1e-01
 
 # Stay in the transformed space:
-cost_complexity() %&gt;% value_seq(n = 4, original = FALSE)
+cost_complexity() |&gt; value_seq(n = 4, original = FALSE)
 #&gt; [1] -10  -7  -4  -1</code></pre>
 <p>Random values can be sampled too. A random uniform distribution is
 used (between the range values). Since this parameter has a
@@ -164,7 +163,7 @@ transformation associated with it, the values are simulated in the
 transformed scale and then returned in the natural units (although the
 <code>original</code> argument can be used here):</p>
 <pre class="r"><code>set.seed(5473)
-cost_complexity() %&gt;% value_sample(n = 4)
+cost_complexity() |&gt; value_sample(n = 4)
 #&gt; [1] 6.91e-09 8.46e-04 3.45e-06 5.90e-10</code></pre>
 <p>For CART trees, there is a discrete set of values that exist for a
 given data set. It may be a good idea to assign these possible values to
@@ -184,22 +183,22 @@ cp_vals &lt;- cart_mod$cptable[, &quot;CP&quot;]
 cp_vals &lt;- cp_vals[ cart_mod$cptable[, &quot;nsplit&quot;] &gt; 0 ]
 
 # Here the specific Cp values, on their natural scale, are added:
-mtcars_cp &lt;- cost_complexity() %&gt;% value_set(cp_vals)
+mtcars_cp &lt;- cost_complexity() |&gt; value_set(cp_vals)
 #&gt; Error in `value_set()`:
 #&gt; ! Some values are not valid: 0.0974840733898344 and 1e-06.</code></pre>
 <p>The error occurs because the values are not in the transformed
 scale:</p>
-<pre class="r"><code>mtcars_cp &lt;- cost_complexity() %&gt;% value_set(log10(cp_vals))
+<pre class="r"><code>mtcars_cp &lt;- cost_complexity() |&gt; value_set(log10(cp_vals))
 mtcars_cp</code></pre>
 <p>Now, if a sequence or random sample is requested, it uses the set
 values:</p>
-<pre class="r"><code>mtcars_cp %&gt;% value_seq(2)
+<pre class="r"><code>mtcars_cp |&gt; value_seq(2)
 #&gt; [1] 0.097484 0.000001
 # Sampling specific values is done with replacement
-mtcars_cp %&gt;% 
-  value_sample(20) %&gt;% 
+mtcars_cp |&gt; 
+  value_sample(20) |&gt; 
   table()
-#&gt; .
+#&gt; 
 #&gt;              1e-06 0.0974840733898344 
 #&gt;                  9                 11</code></pre>
 <p>Any transformations from the <code>scales</code> package can be used
@@ -221,7 +220,7 @@ sampled values are between <code>-log2(10)</code> and
 <code>-log2(1)</code>.</p>
 <pre class="r"><code>-log2(c(10, 1))
 #&gt; [1] -3.32  0.00
-value_sample(custom_cost, 100) %&gt;% range()
+value_sample(custom_cost, 100) |&gt; range()
 #&gt; [1] -3.3172 -0.0314</code></pre>
 </div>
 <div id="discrete-parameters" class="section level3">
@@ -234,12 +233,12 @@ functions:</p>
 <p>The helper functions are analogues to the quantitative
 parameters:</p>
 <pre class="r"><code># redefine values
-weight_func() %&gt;% value_set(c(&quot;rectangular&quot;, &quot;triangular&quot;))
-weight_func() %&gt;% value_sample(3)
+weight_func() |&gt; value_set(c(&quot;rectangular&quot;, &quot;triangular&quot;))
+weight_func() |&gt; value_sample(3)
 #&gt; [1] &quot;triangular&quot; &quot;inv&quot;        &quot;triweight&quot;
 
 # the sequence is returned in the order of the levels
-weight_func() %&gt;% value_seq(3)
+weight_func() |&gt; value_seq(3)
 #&gt; [1] &quot;rectangular&quot;  &quot;triangular&quot;   &quot;epanechnikov&quot;</code></pre>
 </div>
 </div>
