@@ -1,6 +1,6 @@
 Package: dials
 Title: Tools for Creating Tuning Parameter Values
-Version: 1.4.1
+Version: 1.4.2
 Authors@R: c(
     person("Max", "Kuhn", , "max@posit.co", role = "aut"),
     person("Hannah", "Frick", , "hannah@posit.co", role = c("aut", "cre")),
@@ -28,10 +28,10 @@ Config/usethis/last-upkeep: 2025-04-23
 Encoding: UTF-8
 RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2025-07-29 19:00:37 UTC; hannah
+Packaged: 2025-09-03 18:17:06 UTC; hannah
 Author: Max Kuhn [aut],
   Hannah Frick [aut, cre],
   Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Hannah Frick <hannah@posit.co>
 Repository: CRAN
-Date/Publication: 2025-07-29 19:40:02 UTC
+Date/Publication: 2025-09-04 07:40:14 UTC
