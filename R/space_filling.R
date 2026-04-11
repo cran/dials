@@ -109,6 +109,24 @@ grid_space_filling <- function(
 
 #' @export
 #' @rdname grid_space_filling
+grid_space_filling.default <- function(
+  x,
+  ...,
+  size = 5,
+  type = "any",
+  original = TRUE
+) {
+  if (missing(x)) {
+    cli::cli_abort("At least one parameter object is required.")
+  }
+  cli::cli_abort(
+    "{.arg x} must be a {.cls param} object, list, or {.cls parameters} object,
+    not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @export
+#' @rdname grid_space_filling
 grid_space_filling.parameters <- function(
   x,
   ...,
@@ -118,8 +136,20 @@ grid_space_filling.parameters <- function(
   iter = 1000,
   original = TRUE
 ) {
-  # test for NA and finalized
-  # test for empty ...
+  check_dots_empty()
+
+  if (nrow(x) == 0) {
+    cli::cli_abort("At least one parameter object is required.")
+  }
+  for (i in seq_along(x$object)) {
+    check_param(
+      x$object[[i]],
+      allow_na = FALSE,
+      allow_unknown = FALSE,
+      arg = x$id[i]
+    )
+  }
+
   params <- x$object
   names(params) <- x$id
   grd <- make_sfd(
@@ -145,6 +175,21 @@ grid_space_filling.list <- function(
   iter = 1000,
   original = TRUE
 ) {
+  check_dots_empty()
+
+  if (length(x) == 0) {
+    cli::cli_abort("At least one parameter object is required.")
+  }
+  param_names <- names(x)
+  for (i in seq_along(x)) {
+    check_param(
+      x[[i]],
+      allow_na = FALSE,
+      allow_unknown = FALSE,
+      arg = param_arg_name(param_names[i], x[[i]], i)
+    )
+  }
+
   y <- parameters(x)
   params <- y$object
   names(params) <- y$id
@@ -172,7 +217,18 @@ grid_space_filling.param <- function(
   type = "any",
   original = TRUE
 ) {
-  y <- parameters(list(x, ...))
+  param_list <- list(x, ...)
+  param_names <- names(param_list)
+  for (i in seq_along(param_list)) {
+    check_param(
+      param_list[[i]],
+      allow_na = FALSE,
+      allow_unknown = FALSE,
+      arg = param_arg_name(param_names[i], param_list[[i]], i)
+    )
+  }
+
+  y <- parameters(param_list)
   params <- y$object
   names(params) <- y$id
   grd <- make_sfd(
@@ -206,8 +262,16 @@ make_sfd <- function(
   original = TRUE,
   call = caller_env()
 ) {
+  check_number_whole(size, min = 1, call = call)
+  check_number_decimal(
+    variogram_range,
+    min = 0,
+    call = call
+  )
+  check_number_whole(iter, min = 1, call = call)
+  check_bool(original, call = call)
   type <- rlang::arg_match(type, sfd_types)
-  validate_params(..., call = call)
+
   param_quos <- quos(...)
   params <- map(param_quos, eval_tidy)
   p <- length(params)
@@ -224,7 +288,7 @@ make_sfd <- function(
 
     if (has_premade_design) {
       grid <- sfd::get_design(p, num_points = size, type = type)
-      vals <- purrr::map(params, \(.x) value_seq(.x, size))
+      vals <- purrr::map(params, \(.x) value_seq(.x, size, original = original))
       vals <- purrr::map(vals, \(.x) base_recycle(.x, size))
       grid <- sfd::update_values(grid, vals)
       names(grid) <- names(params)
@@ -397,14 +461,20 @@ make_max_entropy_grid <- function(
   iter = 1000,
   call = caller_env()
 ) {
+  check_number_whole(size, min = 1, call = call)
+  check_number_decimal(
+    variogram_range,
+    min = 0,
+    call = call
+  )
+  check_number_whole(iter, min = 1, call = call)
+  check_bool(original, call = call)
   validate_params(..., call = call)
   param_quos <- quos(...)
   params <- map(param_quos, eval_tidy)
   param_names <- names(param_quos)
   param_labs <- map_chr(params, function(x) x$label)
   names(param_labs) <- param_names
-
-  rngs <- map(params, range_get, original = FALSE)
 
   sfd <-
     DiceDesign::dmaxDesign(
@@ -418,16 +488,19 @@ make_max_entropy_grid <- function(
   sf_grid <- as_tibble(sfd$design)
 
   # Get back to parameter units
-  sf_grid <- map2_dfc(
+  sf_grid <- map2(
     params,
     sf_grid,
-    encode_unit,
-    direction = "backward",
-    original = original
+    \(param, grid) {
+      if (inherits(param, "quant_param")) {
+        encode_unit(param, grid, direction = "backward", original = original)
+      } else {
+        encode_unit(param, grid, direction = "backward")
+      }
+    }
   )
-  colnames(sf_grid) <- param_names
-
-  sf_grid
+  names(sf_grid) <- param_names
+  as_tibble(sf_grid)
 }
 
 #' @export
@@ -491,6 +564,8 @@ make_latin_hypercube_grid <- function(
   original = TRUE,
   call = caller_env()
 ) {
+  check_number_whole(size, min = 1, call = call)
+  check_bool(original, call = call)
   validate_params(..., call = call)
   param_quos <- quos(...)
   params <- map(param_quos, eval_tidy)
@@ -508,14 +583,17 @@ make_latin_hypercube_grid <- function(
   sf_grid <- as_tibble(sfd$design)
 
   # Get back to parameter units
-  sf_grid <- map2_dfc(
+  sf_grid <- map2(
     params,
     sf_grid,
-    encode_unit,
-    direction = "backward",
-    original = original
+    \(param, grid) {
+      if (inherits(param, "quant_param")) {
+        encode_unit(param, grid, direction = "backward", original = original)
+      } else {
+        encode_unit(param, grid, direction = "backward")
+      }
+    }
   )
-  colnames(sf_grid) <- param_names
-
-  sf_grid
+  names(sf_grid) <- param_names
+  as_tibble(sf_grid)
 }

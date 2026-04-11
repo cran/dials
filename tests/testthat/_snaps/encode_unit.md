@@ -12,7 +12,7 @@
       encode_unit(prune_method(), 13, direction = "forward")
     Condition
       Error in `encode_unit()`:
-      ! `value` should be a character vector.
+      ! `value` must be a character vector, not the number 13.
 
 # to [0, 1] for quantitative values
 
@@ -20,15 +20,31 @@
       encode_unit(penalty(), "penalty", direction = "forward")
     Condition
       Error in `encode_unit()`:
-      ! `value` should be a numeric vector.
+      ! `value` must be a numeric vector, not the string "penalty".
+
+# encode_unit validates original argument
+
+    Code
+      encode_unit(x, 0.5, direction = "backward", original = "yes")
+    Condition
+      Error in `encode_unit()`:
+      ! `original` must be `TRUE` or `FALSE`, not the string "yes".
 
 # bad args
+
+    Code
+      encode_unit("foo")
+    Condition
+      Error in `encode_unit()`:
+      ! `x` must be a dials parameter object, not the string "foo".
+
+---
 
     Code
       encode_unit(2, prune_method()$values, direction = "forward")
     Condition
       Error in `encode_unit()`:
-      ! `x` should be a dials parameter object.
+      ! `x` must be a dials parameter object, not the number 2.
 
 ---
 
@@ -45,7 +61,7 @@
       encode_unit(x, prune_method()$values, direction = "forward")
     Condition
       Error in `encode_unit()`:
-      ! `value` should be a numeric vector.
+      ! `value` must be a numeric vector, not a character vector.
 
 ---
 
@@ -53,7 +69,7 @@
       encode_unit(z, 1, direction = "forward")
     Condition
       Error in `encode_unit()`:
-      ! `value` should be a character vector.
+      ! `value` must be a character vector, not the number 1.
 
 ---
 
@@ -61,7 +77,7 @@
       encode_unit(x, matrix(letters[1:4], ncol = 2), direction = "forward")
     Condition
       Error in `encode_unit()`:
-      ! `value` should be a numeric vector.
+      ! `value` must be a numeric vector, not a character matrix.
 
 ---
 
@@ -69,7 +85,7 @@
       encode_unit(x, matrix(1:4, ncol = 2), direction = "forward")
     Condition
       Error in `encode_unit()`:
-      ! `value` should be a numeric vector.
+      ! `value` must be a numeric vector, not an integer matrix.
 
 ---
 
@@ -77,7 +93,7 @@
       encode_unit(z, matrix(1:4, ncol = 2), direction = "forward")
     Condition
       Error in `encode_unit()`:
-      ! `value` should be a character vector.
+      ! `value` must be a character vector, not an integer matrix.
 
 ---
 
@@ -85,7 +101,7 @@
       encode_unit(z, matrix(letters[1:4], ncol = 2), direction = "forward")
     Condition
       Error in `encode_unit()`:
-      ! `value` should be a character vector.
+      ! `value` must be a character vector, not a character matrix.
 
 ---
 
@@ -93,7 +109,7 @@
       encode_unit(x, prune_method()$values, direction = "backward")
     Condition
       Error in `encode_unit()`:
-      ! `value` should be a numeric vector.
+      ! `value` must be a numeric vector, not a character vector.
 
 ---
 

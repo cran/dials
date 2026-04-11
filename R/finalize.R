@@ -94,12 +94,14 @@ finalize <- function(object, ...) {
 #' @export
 #' @rdname finalize
 finalize.list <- function(object, x, force = TRUE, ...) {
+  check_bool(force)
   map(object, finalize, x, force, ...)
 }
 
 #' @export
 #' @rdname finalize
 finalize.param <- function(object, x, force = TRUE, ...) {
+  check_bool(force)
   if (is.null(object$finalize)) {
     return(object)
   }
@@ -114,7 +116,7 @@ safe_finalize <- function(object, x, force = TRUE, ...) {
   if (all(is.na(object))) {
     res <- NA
   } else {
-    res <- finalize(object, x, force = force, ...)
+    res <- finalize(object, x = x, force = force, ...)
   }
   res
 }
@@ -122,7 +124,7 @@ safe_finalize <- function(object, x, force = TRUE, ...) {
 #' @export
 #' @rdname finalize
 finalize.parameters <- function(object, x, force = TRUE, ...) {
-  object$object <- map(object$object, safe_finalize, x, force, ...)
+  object$object <- map(object$object, safe_finalize, x = x, force = force, ...)
   object
 }
 
@@ -152,7 +154,9 @@ finalize.default <- function(object, x, force = TRUE, ...) {
 #' @export
 #' @rdname finalize
 get_p <- function(object, x, log_vals = FALSE, ...) {
-  check_param(object)
+  check_inherits(object, "param")
+  check_bool(log_vals)
+  check_dots_empty()
 
   rngs <- range_get(object, original = FALSE)
   if (!is_unknown(rngs$upper)) {
@@ -182,13 +186,18 @@ get_p <- function(object, x, log_vals = FALSE, ...) {
 #' @export
 #' @rdname finalize
 get_log_p <- function(object, x, ...) {
-  get_p(object, x, log_vals = TRUE, ...)
+  check_inherits(object, "param")
+  check_dots_empty()
+  get_p(object, x, log_vals = TRUE)
 }
 
 #' @export
 #' @rdname finalize
 get_n_frac <- function(object, x, log_vals = FALSE, frac = 1 / 3, ...) {
-  check_param(object)
+  check_inherits(object, "param")
+  check_bool(log_vals)
+  check_number_decimal(frac, min = 0, max = 1)
+  check_dots_empty()
 
   rngs <- range_get(object, original = FALSE)
   if (!is_unknown(rngs$upper)) {
@@ -224,6 +233,11 @@ get_n_frac_range <- function(
   frac = c(1 / 10, 5 / 10),
   ...
 ) {
+  check_inherits(object, "param")
+  check_bool(log_vals)
+  check_frac_range(frac)
+  check_dots_empty()
+
   rngs <- range_get(object, original = FALSE)
   if (!is_unknown(rngs$upper)) {
     return(object)
@@ -254,12 +268,15 @@ get_n_frac_range <- function(
 #' @export
 #' @rdname finalize
 get_n <- function(object, x, log_vals = FALSE, ...) {
-  get_n_frac(object, x, log_vals, frac = 1, ...)
+  check_inherits(object, "param")
+  check_dots_empty()
+  get_n_frac(object, x, log_vals, frac = 1)
 }
 
 #' @export
 #' @rdname finalize
 get_rbf_range <- function(object, x, seed = sample.int(10^5, 1), ...) {
+  check_inherits(object, "param")
   rlang::check_installed("kernlab")
   suppressPackageStartupMessages(requireNamespace("kernlab", quietly = TRUE))
   x_mat <- as.matrix(x)
@@ -282,6 +299,7 @@ get_rbf_range <- function(object, x, seed = sample.int(10^5, 1), ...) {
 #' @export
 get_batch_sizes <- function(object, x, frac = c(1 / 10, 1 / 3), ...) {
   lifecycle::deprecate_warn("1.4.2", "get_batch_sizes()")
+  check_dots_empty()
 
   rngs <- range_get(object, original = FALSE)
   if (!is_unknown(rngs$lower) & !is_unknown(rngs$upper)) {

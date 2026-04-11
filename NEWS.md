@@ -1,3 +1,26 @@
+# dials 1.4.3
+
+## New parameters
+
+* `ordinal_link()` and `odds_link()` are two new parameters for the new `ordinal_reg()` models in parsnip (@corybrunson, #435).
+
+* `num_estimators()`, `softmax_temperature()`, `balance_probabilities()`, `average_before_softmax()`, and `training_set_limit()` are new parameters for the `tab_pfn()` model in parsnip (#412).
+
+## Other changes
+
+* `grid_space_filling()` now also respects the `original` argument when pre-made designs are available (#409).
+
+* `parameters()` and the `grid_*()` functions give more information in the error message when non-parameter objects are passed in (#437, #438).
+
+* `encode_unit()` now provides a helpful error when `x` is not a parameter object (#430).
+
+* `value_validate()`, `value_transform()`, `value_inverse()`, and `value_set()` now produce more informative error messages when values contain unknowns (#445).
+
+* `value_validate()`, `encode_unit()`, `get_p()`, `get_log_p()`, `get_n()`, `get_n_frac()`, `get_n_frac_range()`, and `get_batch_sizes()` now enforce empty dots (#439).
+
+* Several further type-checking error messages now include the actual type of the input (#423).
+
+
 # dials 1.4.2
 
 * `prop_terms()` is a new parameter object used for recipes that do supervised feature selection (#395). 

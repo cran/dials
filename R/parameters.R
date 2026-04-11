@@ -1,9 +1,22 @@
-#' Information on tuning parameters within an object
+#' Create a parameter set
 #'
 #' @param x An object, such as a list of `param` objects or an actual `param`
-#' object.
+#'   object.
 #' @param ... Only used for the `param` method so that multiple `param` objects
-#' can be passed to the function.
+#'   can be passed to the function.
+#'
+#' @return
+#' A parameter set of class `parameters` in the form of a data frame where each
+#' row represents one tunable parameter.
+#'
+#' @seealso [dials::update.parameters()], [dials::finalize()],
+#'   [hardhat::extract_parameter_set_dials()]
+#'
+#' @examples
+#' params <- list(lambda = penalty(), alpha = mixture(), `rand forest` = mtry())
+#' pset <- parameters(params)
+#' pset
+#'
 #' @export
 parameters <- function(x, ...) {
   UseMethod("parameters")
@@ -12,6 +25,11 @@ parameters <- function(x, ...) {
 #' @export
 #' @rdname parameters
 parameters.default <- function(x, ...) {
+  if (missing(x)) {
+    cli::cli_abort(
+      "No input provided. Please supply at least one parameter object."
+    )
+  }
   cli::cli_abort(
     "{.cls parameters} objects cannot be created from {.obj_type_friendly {x}}."
   )
@@ -31,9 +49,14 @@ parameters.param <- function(x, ...) {
 parameters.list <- function(x, ...) {
   check_dots_empty()
 
-  elem_param <- purrr::map_lgl(x, inherits, "param")
-  if (any(!elem_param)) {
-    cli::cli_abort("The objects should all be {.cls param} objects.")
+  param_names <- names(x)
+  for (i in seq_along(x)) {
+    check_param(
+      x[[i]],
+      allow_na = FALSE,
+      allow_unknown = TRUE,
+      arg = param_arg_name(param_names[i], x[[i]], i)
+    )
   }
   elem_name <- purrr::map_chr(x, \(.x) names(.x$label))
   elem_id <- names(x)
@@ -51,49 +74,6 @@ parameters.list <- function(x, ...) {
     rep("unknown", p),
     x
   )
-}
-
-unique_check <- function(x, ..., call = caller_env()) {
-  check_dots_empty()
-  x2 <- x[!is.na(x)]
-  is_dup <- duplicated(x2)
-  if (any(is_dup)) {
-    dup_list <- x2[is_dup]
-    cl <- match.call()
-
-    cli::cli_abort(
-      c(
-        x = "Element {.field {deparse(cl$x)}} should have unique values.",
-        i = "Duplicates exist for {cli::qty(dup_list)} item{?s}: {dup_list}"
-      ),
-      call = call
-    )
-  }
-  invisible(TRUE)
-}
-
-param_or_na <- function(x) {
-  inherits(x, "param") | all(is.na(x))
-}
-
-check_list_of_param <- function(x, ..., call = caller_env()) {
-  check_dots_empty()
-  if (!is.list(x)) {
-    cli::cli_abort(
-      "{.arg object} must be a list of {.cls param} objects.",
-      call = call
-    )
-  }
-  is_good_boi <- map_lgl(x, param_or_na)
-  if (any(!is_good_boi)) {
-    offenders <- which(!is_good_boi)
-
-    cli::cli_abort(
-      "{.arg object} elements in the following positions must be {.code NA} or a 
-      {.cls param} object: {offenders}.",
-      call = call
-    )
-  }
 }
 
 #' Construct a new parameter set object
@@ -122,16 +102,24 @@ parameters_constr <- function(
 
   check_character(name, call = call)
   check_character(id, call = call)
-  unique_check(id, call = call)
+  check_unique(id, call = call)
   check_character(source, call = call)
   check_character(component, call = call)
   check_character(component_id, call = call)
-  check_list_of_param(object, call = call)
+  if (!is.list(object)) {
+    cli::cli_abort("{.arg object} must be a list.", call = call)
+  }
+  for (i in seq_along(object)) {
+    check_param(
+      object[[i]],
+      allow_na = TRUE,
+      allow_unknown = TRUE,
+      arg = paste0("object[[", i, "]]"),
+      call = call
+    )
+  }
 
-  n_elements <- map_int(
-    list(name, id, source, component, component_id, object),
-    length
-  )
+  n_elements <- lengths(list(name, id, source, component, component_id, object))
   n_elements_unique <- unique(n_elements)
   if (length(n_elements_unique) > 1) {
     cli::cli_abort(
@@ -177,12 +165,13 @@ print.parameters <- function(x, ...) {
   print_x$object <-
     purrr::map_chr(
       print_x$object,
-      \(.x)
+      \(.x) {
         if (all(is.na(.x))) {
           "missing"
         } else {
           pillar::type_sum(.x)
         }
+      }
     )
 
   cli::cli_par()

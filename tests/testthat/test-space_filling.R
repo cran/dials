@@ -151,7 +151,7 @@ test_that("sfd package designs AE", {
   dials_2_any <- grid_space_filling(prm, size = size, type = "any")
   sfd_2_any <- sfd::get_design(2, num_points = size, type = "any")
 
-  dials_2_ae <- grid_space_filling(prm, size = size, method = "audze_eglais")
+  dials_2_ae <- grid_space_filling(prm, size = size, type = "audze_eglais")
   sfd_2_ae <- sfd::get_design(2, num_points = size, type = "audze_eglais")
   names(sfd_2_ae) <- prm$id
   for (i in 1:2) {
@@ -329,4 +329,86 @@ test_that("1-point grid", {
     grid <- grid_space_filling(parameters(neighbors()), size = 1)
   })
   expect_equal(nrow(grid), 1L)
+})
+
+test_that("grid_space_filling validates inputs", {
+  expect_snapshot(error = TRUE, grid_space_filling(penalty(), size = "five"))
+  expect_snapshot(error = TRUE, grid_space_filling(penalty(), size = -1))
+  expect_snapshot(
+    error = TRUE,
+    grid_space_filling(penalty(), variogram_range = -1)
+  )
+  expect_snapshot(error = TRUE, grid_space_filling(penalty(), iter = "many"))
+  expect_snapshot(error = TRUE, grid_space_filling(penalty(), original = "yes"))
+})
+
+test_that("grid_space_filling() errors with non-param inputs", {
+  # default method
+  expect_snapshot(error = TRUE, grid_space_filling())
+  expect_snapshot(error = TRUE, grid_space_filling("not a param"))
+
+  # param method
+  expect_snapshot(error = TRUE, grid_space_filling(penalty(), "min_n"))
+  expect_snapshot(error = TRUE, grid_space_filling(mtry(), "min_n"))
+
+  # list method
+  expect_snapshot(error = TRUE, grid_space_filling(list()))
+  expect_snapshot(error = TRUE, grid_space_filling(list(penalty(), "min_n")))
+  expect_snapshot(error = TRUE, grid_space_filling(list(mtry(), "min_n")))
+})
+
+test_that("grid_space_filling.parameters() checks for NA", {
+  p <- parameters(penalty())
+  p <- update(p, penalty = NA)
+  expect_snapshot(error = TRUE, grid_space_filling(p))
+})
+
+test_that("grid_space_filling() errors with params containing unknowns", {
+  # parameters method
+  expect_snapshot(error = TRUE, grid_space_filling(parameters(mtry())))
+
+  # param method
+  expect_snapshot(error = TRUE, grid_space_filling(mtry()))
+  expect_snapshot(error = TRUE, grid_space_filling(mtry(), sample_size()))
+
+  # list method
+  expect_snapshot(error = TRUE, grid_space_filling(list(mtry())))
+  expect_snapshot(
+    error = TRUE,
+    grid_space_filling(list(mtry_custom_name = mtry()))
+  )
+  expect_snapshot(error = TRUE, grid_space_filling(list(mtry(), sample_size())))
+})
+
+test_that("grid_space_filling() errors with duplicate parameter ids", {
+  # param method
+  expect_snapshot(error = TRUE, grid_space_filling(penalty(), penalty()))
+
+  # list method
+  expect_snapshot(
+    error = TRUE,
+    grid_space_filling(list(a = penalty(), a = mtry()))
+  )
+})
+
+test_that("pre-made designs respect the 'original argument", {
+  # See issue #409
+
+  prms <- parameters(penalty(), mixture())
+  types <- c(
+    "audze_eglais",
+    "max_min_l1",
+    "max_min_l2",
+    "uniform",
+    "max_entropy",
+    "latin_hypercube"
+  )
+
+  for (i in types) {
+    grd_orig <- grid_space_filling(prms, type = i, original = TRUE)
+    grd_trans <- grid_space_filling(prms, type = i, original = FALSE)
+
+    expect_true(all(grd_orig$penalty > 0))
+    expect_true(all(grd_trans$penalty <= 0))
+  }
 })

@@ -14,24 +14,25 @@
 #' @keywords internal
 #' @export
 encode_unit <- function(x, value, direction, ...) {
-  arg_match0(direction, values = c("forward", "backward"))
   UseMethod("encode_unit")
 }
 
 #' @export
 encode_unit.default <- function(x, value, direction, ...) {
-  cli::cli_abort("{.arg x} should be a dials parameter object.")
+  stop_input_type(x, "a dials parameter object")
 }
 
 #' @rdname encode_unit
 #' @export
 encode_unit.quant_param <- function(x, value, direction, original = TRUE, ...) {
+  arg_match0(direction, values = c("forward", "backward"))
+  check_bool(original)
   if (has_unknowns(x)) {
     cli::cli_abort("The parameter object contains unknowns.")
   }
 
   if (!is.numeric(value) || is.matrix(value)) {
-    cli::cli_abort("{.arg value} should be a numeric vector.")
+    stop_input_type(value, "a numeric vector")
   }
 
   param_rng <- x$range$upper - x$range$lower
@@ -66,6 +67,8 @@ encode_unit.quant_param <- function(x, value, direction, original = TRUE, ...) {
 #' @rdname encode_unit
 #' @export
 encode_unit.qual_param <- function(x, value, direction, ...) {
+  arg_match0(direction, values = c("forward", "backward"))
+  check_dots_empty()
   if (has_unknowns(x)) {
     cli::cli_abort("The parameter object contains unknowns.")
   }
@@ -77,7 +80,7 @@ encode_unit.qual_param <- function(x, value, direction, ...) {
     # convert to [0, 1]
 
     if (!is.character(value) || is.matrix(value)) {
-      cli::cli_abort("{.arg value} should be a character vector.")
+      stop_input_type(value, "a character vector")
     }
 
     compl <- value[!is.na(value)]
@@ -101,7 +104,7 @@ encode_unit.qual_param <- function(x, value, direction, ...) {
     }
 
     if (!is.numeric(value) || is.matrix(value)) {
-      cli::cli_abort("{.arg value} should be a numeric vector.")
+      stop_input_type(value, "a numeric vector")
     }
 
     ind <- cut(
