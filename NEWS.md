@@ -1,3 +1,14 @@
+# dials 1.4.4
+
+* `attention_type()`, `dropout_hidden()`, `dropout_last()`, and `target_token()` are new parameters for the SAINT model in the brulee package (#452).
+
+* `bottleneck_units()`, `dropout_attn()`, `dropout_embedding()`, `num_attn_blocks()`, `num_attn_feat()`, `num_attn_heads()`, `num_embedding()`, `penalty_average()`, `penalty_type()`, `normalization()`, `resid_at()`, and `step_rate()` are new parameters for deep learning models in the tabular package when fit with the brulee engine (#452, #461).
+
+* `l2_leaf_reg()` and `max_leaves()` are new parameter objects for tree-based models that use the "catboost" engine in the bonsai package (#453).
+
+* `splitting_rule()` gains support for survival forests (#456).
+
+
 # dials 1.4.3
 
 ## New parameters
